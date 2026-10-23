@@ -1,7 +1,7 @@
 # @1e99/components
 
 Componentes React compartilhados pelos produtos 1e99. `Navbar`,
-`GoogleSignInButton` e `LocaleSelector` foram extraídos fielmente de
+`GoogleSignInButton` e `Selector` foram extraídos fielmente de
 `domain-website` e `curriculo`, sem introduzir dependência de Next.js,
 autenticação, i18n ou geração de PDF.
 
@@ -41,55 +41,73 @@ O pacote não redefine esses tokens nem importa CSS global no aplicativo.
 ## Uso
 
 ```tsx
+import {useState} from "react";
 import {
   GoogleSignInButton,
-  LocaleSelector,
   Navbar,
+  Selector,
 } from "@1e99/components";
+
+type LocaleOption = {
+  label: string;
+  languageTag: string;
+  value: string;
+};
 
 const localeOptions = [
   { value: "pt", label: "Português", languageTag: "pt-BR" },
   { value: "en", label: "English", languageTag: "en" },
   { value: "es", label: "Español", languageTag: "es" },
-];
+] satisfies readonly LocaleOption[];
 
-const locale = "pt";
+function Header() {
+  const [locale, setLocale] = useState("pt");
 
-function handleLocaleChange(nextLocale: string) {
-  // O aplicativo decide se atualiza estado, rota ou preferência persistida.
+  return (
+    <Navbar
+      brand={<a href="/"><BrandLogo /></a>}
+      items={[
+        { href: "/apps", label: "Apps" },
+        { href: "/about", label: "Sobre" },
+      ]}
+      navigationLabel="Navegação principal"
+      renderLink={({ href, children, className }) => (
+        <Link className={className} href={href}>{children}</Link>
+      )}
+      actions={
+        <div className="hidden items-center gap-3 md:flex">
+          <Selector
+            label={t("language")}
+            onValueChange={setLocale}
+            options={localeOptions}
+            renderOption={({ option }) => (
+              <span lang={option.languageTag}>{option.label}</span>
+            )}
+            renderTrigger={({ selectedOption, value }) => (
+              <span lang={selectedOption?.languageTag}>
+                {selectedOption?.label ?? value}
+              </span>
+            )}
+            value={locale}
+          />
+          <GoogleSignInButton
+            label={t("signInWithGoogle")}
+            onClick={startGoogleLogin}
+          />
+        </div>
+      }
+      width="content"
+      layer="above"
+      linkTreatment="underlined"
+      linkWeight="semibold"
+      mobileNavigation={{
+        menuLabel: t("openNavigation"),
+        navigationLabel: t("mobileNavigation"),
+        actions: <MobileAccountActions />,
+      }}
+    />
+  );
 }
-
-<Navbar
-  brand={<a href="/"><BrandLogo /></a>}
-  items={[
-    { href: "/apps", label: "Apps" },
-    { href: "/about", label: "Sobre" },
-  ]}
-  navigationLabel="Navegação principal"
-  renderLink={({ href, children, className }) => (
-    <Link className={className} href={href}>{children}</Link>
-  )}
-  actions={
-    <div className="hidden items-center gap-3 md:flex">
-      <LocaleSelector
-        label="Idioma"
-        onValueChange={handleLocaleChange}
-        options={localeOptions}
-        value={locale}
-      />
-      <GoogleSignInButton label={t("signInWithGoogle")} onClick={startGoogleLogin} />
-    </div>
-  }
-  width="content"
-  layer="above"
-  linkTreatment="underlined"
-  linkWeight="semibold"
-  mobileNavigation={{
-    menuLabel: "Abrir menu de navegação",
-    navigationLabel: "Navegação principal móvel",
-    actions: <MobileAccountActions />,
-  }}
-/>
 ```
 
 | Prop | Opções | Uso nos projetos existentes |
@@ -116,15 +134,27 @@ comportamentais nativos de botão (`onClick`, `disabled`, `aria-*`). Não aceita
 variante nem `className`; autenticação e estado de carregamento são do
 consumidor.
 
-`LocaleSelector` recebe os rótulos e códigos de idioma já traduzidos pelo
-consumidor. É controlado por `value` e `onValueChange`: chama o callback,
-fecha o disclosure e não presume navegação. O aplicativo decide se a troca
-atualiza estado, rota ou uma preferência persistida. Ele apresenta botões com
-`aria-pressed` e aceita `density` `standard` (padrão), `compact` ou
-`compact-mobile`, além de `whiteSurface` para o editor do currículo.
-`triggerAriaLabel` permite conservar o rótulo acessível próprio de cada
-aplicativo. Controles de idioma específicos de diálogo ou PDF pertencem ao
-aplicativo que os utiliza.
+`Selector` é um disclosure genérico para uma coleção controlada. Cada opção
+tem apenas `value` estável e `label` como contrato-base; o consumidor pode
+acrescentar campos ao tipar sua própria coleção, como `languageTag`, descrição
+ou ícone. `value` e `onValueChange` são controlados pelo consumidor: ao clicar
+em uma opção, o componente informa o novo valor e fecha o disclosure, mas não
+navega nem atualiza estado por conta própria.
+
+`renderOption` recebe `option`, `isSelected` e `select`; ele renderiza somente
+o conteúdo interno do botão que o pacote controla. `renderTrigger` recebe
+`selectedOption` e `value` para personalizar o conteúdo do gatilho. Dessa
+forma, atributos como `lang` ficam no conteúdo do aplicativo consumidor, não
+no tipo genérico do pacote. O componente preserva botões com `aria-pressed`,
+`select-none`, as densidades `standard` (padrão), `compact` e
+`compact-mobile`, `whiteSurface` e `triggerAriaLabel`.
+
+`Navbar` não recebe props de idioma nem de autenticação. `items`, `actions` e
+`mobileNavigation.actions` são os pontos de composição para qualquer controle
+ou CTA do produto. No Storybook, `Navigation/Navbar` inclui o playground de
+referência com o logo oficial fixo; seus args serializáveis controlam itens,
+seletor, botão Google e menu móvel. O seletor e o botão também possuem stories
+próprias em `Controls/Selector` e `Controls/GoogleSignInButton`.
 
 ## Desenvolvimento e testes
 
@@ -146,10 +176,10 @@ Husky executa `pnpm lint` e `pnpm test` antes de cada commit local, portanto
 ambos devem passar antes de o histórico ser criado.
 
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
-exibem os perfis fiéis dos dois aplicativos e o seletor de idioma controlado,
-incluindo o SVG oficial somente como asset de demonstração do Storybook. Elas
-são verificadas em Chromium por `pnpm test:stories`, com os addons oficiais de
-acessibilidade e Vitest.
+exibem o playground configurável da navbar, o seletor genérico e o botão
+Google, incluindo o SVG oficial somente como asset de demonstração do
+Storybook. Elas são verificadas em Chromium por `pnpm test:stories`, com os
+addons oficiais de acessibilidade e Vitest.
 
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes
 do teste de stories:

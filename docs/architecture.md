@@ -5,7 +5,7 @@
 Este repositório reúne componentes React reutilizáveis pelos aplicativos 1e99.
 Ele iniciou com a navbar já aplicada, com pequenas diferenças, em
 `domain-website` e `curriculo`; agora também concentra os controles visuais de
-idioma e entrada com Google usados por esses headers.
+seleção e entrada com Google usados por esses headers.
 
 O pacote será independente de Next.js. Logo, links localizados, imagem da
 marca, autenticação, traduções, rotas e regras de geração de documento
@@ -33,10 +33,10 @@ mesmos tokens da marca.
 
 Não serão compartilhados autenticação, `next-intl`, `next/image`, rotas,
 traduções, ícones de ações ou regras de conta. `GoogleSignInButton` centraliza
-somente a apresentação do login; `LocaleSelector` centraliza o disclosure,
-mas recebe rótulos, destinos e seleção pelo consumidor. Isso evita acoplamento
-entre os aplicativos e mantém os componentes compatíveis com React fora de
-Next.js.
+somente a apresentação do login; `Selector` centraliza um disclosure genérico
+e controlado, mas recebe os dados e a seleção pelo consumidor. Isso evita
+acoplamento entre os aplicativos e mantém os componentes compatíveis com React
+fora de Next.js.
 
 ## Organização do pacote
 
@@ -47,9 +47,9 @@ não pertencem a um componente específico. Essa divisão não altera os imports
 dos consumidores.
 
 Os ícones internos usam `react-icons` 5.7.0 — `FcGoogle` e os ícones Lucide
-`LuChevronDown`, `LuMenu` e `LuExternalLink` — a mesma biblioteca usada pelos
-dois projetos fonte. Eles são decorativos (`aria-hidden`); os rótulos
-acessíveis vêm das props internacionalizadas de cada consumidor.
+`LuChevronDown` e `LuMenu` — a mesma biblioteca usada pelos dois projetos
+fonte. Eles são decorativos (`aria-hidden`); os rótulos acessíveis vêm das
+props internacionalizadas de cada consumidor.
 
 ## API proposta
 
@@ -72,7 +72,9 @@ estado ou de framework.
 
 `content`, `standard`, `plain` e `semibold` são os defaults. O disclosure só
 existe quando `mobileNavigation` é fornecido e usa `md:hidden`, igual ao
-domain-website; o currículo não o fornece.
+domain-website; o currículo não o fornece. `Navbar` permanece desacoplada de
+qualquer controle de idioma ou login: esses elementos são compostos nos slots
+pelos consumidores.
 
 ## Controles compartilhados
 
@@ -81,14 +83,17 @@ domain-website; o currículo não o fornece.
 e tipografia semibold. Ele não possui variante visual; `label` é obrigatório
 e já deve chegar traduzido, junto dos atributos comportamentais nativos.
 
-`LocaleSelector` é um único disclosure controlado por `value` e
-`onValueChange`. Escolher um idioma fecha o menu e informa o novo valor, mas
-não muda a aplicação por conta própria; o consumidor decide se deve atualizar
-estado, rotear ou gravar uma preferência. Ele preserva as densidades reais do
-currículo: `standard`, `compact` e `compact-mobile`; `whiteSurface` cobre o
-header branco do editor. Gatilhos e opções usam `select-none` para evitar
-seleção acidental de texto durante a interação. Controles específicos de
-diálogo ou geração de PDF permanecem no aplicativo consumidor.
+`Selector` é um disclosure genérico controlado por `value` e
+`onValueChange`. Cada opção declara `value` e `label`, e os consumidores podem
+estender essa estrutura com os próprios campos. Escolher uma opção fecha o
+menu e informa o novo valor, mas não muda a aplicação por conta própria; o
+consumidor decide se deve atualizar estado, rotear ou gravar uma preferência.
+`renderOption` recebe `option`, `isSelected` e `select` para compor apenas o
+conteúdo dentro do botão que o pacote controla. `renderTrigger` recebe a opção
+selecionada e o valor atual. Por isso, um consumidor de idiomas aplica `lang`
+no conteúdo que renderiza, sem acoplar idioma ao tipo base. O componente
+preserva `standard`, `compact`, `compact-mobile`, `whiteSurface`,
+`triggerAriaLabel`, botões com `aria-pressed` e `select-none`.
 
 ## Tailwind
 
@@ -104,13 +109,15 @@ da folha CSS no aplicativo consumidor.
 
 ## Visualização e qualidade
 
-Storybook React/Vite exibe os perfis visuais fiéis dos dois headers e stories
-próprias do seletor de idioma controlado, com o SVG oficial de logo apenas em
-`.storybook/public`, viewport móvel para o disclosure e os tokens reais de
-superfície, sombra e tipografia. Vitest e Testing Library cobrem semântica,
-layout de regiões irmãs, densidades, menu móvel e os estados ativos dos
-controles. Storybook também tem os addons Vitest e accessibility para tornar
-as stories pontos de partida de teste visual e de interação.
+Storybook React/Vite exibe o playground configurável da navbar e stories
+próprias para `Selector` e `GoogleSignInButton`, com o SVG oficial de logo
+fixo apenas na demonstração da navbar. O playground transforma args
+serializáveis de itens, seletor, Google e menu móvel nos slots genéricos da
+navbar — eles não viram props específicas do componente. Vitest e Testing
+Library cobrem semântica, layout de regiões irmãs, opções estendidas do
+seletor, menu móvel e os estados ativos dos controles. Storybook também tem os
+addons Vitest e accessibility para tornar as stories pontos de partida de teste
+visual e de interação.
 
 ESLint 9 usa `eslint-config-google` junto das regras TypeScript e React.
 `pnpm lint` verifica o padrão, `pnpm lint:fix` aplica as correções automáticas
