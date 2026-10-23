@@ -35,7 +35,7 @@ os aplicativos e mantém a navbar compatível com React fora de Next.js.
 `Navbar` recebe:
 
 - `brand`: nó React do link e logo da marca;
-- `items`: links com `href`, `label` e opcionalmente `id`;
+- `items`: links com `href` e `label`;
 - `renderLink`: função opcional para integrar o roteador do consumidor;
 - `actions`: nó React para a área direita do cabeçalho;
 - `mobileActions`: nó React renderizado no disclosure móvel;
@@ -46,6 +46,10 @@ os aplicativos e mantém a navbar compatível com React fora de Next.js.
 O disclosure usa elementos HTML nativos, portanto o componente permanece
 compatível com renderização no servidor e não introduz uma dependência de
 estado ou de framework.
+
+`content`, `plain` e `hidden` são os defaults. O disclosure permanece visível
+até `lg`, o mesmo breakpoint em que a navegação desktop aparece, para não
+deixar uma faixa sem navegação entre os layouts.
 
 ## Tailwind
 
