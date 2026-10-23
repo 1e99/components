@@ -53,6 +53,16 @@ jobs:
         with:
           name: npm-package
           path: package-artifact
+      - name: Locate release tarball
+        id: package
+        run: |
+          test -d package-artifact
+          package_files=()
+          while IFS= read -r package_file; do
+            package_files+=("$package_file")
+          done < <(find package-artifact -type f -name '*.tgz' -print)
+          test "${#package_files[@]}" -eq 1
+          printf 'file=%s\n' "${package_files[0]}" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
           node-version: 24
@@ -62,4 +72,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ env.NODE_AUTH_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
-      - run: npm publish package-artifact/*.tgz
+      - run: npm publish "${{ steps.package.outputs.file }}"
