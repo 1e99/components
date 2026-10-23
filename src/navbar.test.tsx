@@ -35,4 +35,30 @@ describe("Navbar", () => {
       "/about",
     );
   });
+
+  it("accepts a router-aware link renderer and an actions slot", () => {
+    render(
+      <Navbar
+        actions={<button type="button">Sign in</button>}
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        navigationLabel="Primary navigation"
+        renderLink={({ children, href, className }) => (
+          <a className={className} data-router-link="true" href={`/en${href}`}>
+            {children}
+          </a>
+        )}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Apps" })).toHaveAttribute(
+      "href",
+      "/en/apps",
+    );
+    expect(screen.getByRole("link", { name: "Apps" })).toHaveAttribute(
+      "data-router-link",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
+  });
 });
