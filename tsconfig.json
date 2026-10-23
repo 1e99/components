@@ -12,5 +12,5 @@
     "noEmit": true,
     "types": ["vitest/globals", "@testing-library/jest-dom/vitest"]
   },
-  "include": ["src", ".storybook", "vite.config.ts", "vitest.config.ts", "tsup.config.ts"]
+  "include": ["src", "test", ".storybook", "vite.config.ts", "vitest.config.ts", "tsup.config.ts"]
 }

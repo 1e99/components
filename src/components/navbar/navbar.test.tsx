@@ -1,8 +1,8 @@
 import {describe, expect, it} from 'vitest';
 import {render, screen, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import * as components from './index';
-import {Navbar} from './index';
+import * as components from '../../index';
+import {Navbar} from '../../index';
 
 describe('Navbar', () => {
   it('exports the shared navigation component', () => {

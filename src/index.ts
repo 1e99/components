@@ -1,6 +1,6 @@
-export {GoogleSignInButton} from './google-sign-in-button';
-export type {GoogleSignInButtonProps} from './google-sign-in-button';
-export {LocaleSelector} from './locale-selector';
+export {GoogleSignInButton} from './components/google-sign-in-button/google-sign-in-button';
+export type {GoogleSignInButtonProps} from './components/google-sign-in-button/google-sign-in-button';
+export {LocaleSelector} from './components/locale-selector/locale-selector';
 export type {
   LocaleSelectorDensity,
   LocaleSelectorDocumentProps,
@@ -8,8 +8,8 @@ export type {
   LocaleSelectorNavigationProps,
   LocaleSelectorOption,
   LocaleSelectorProps,
-} from './locale-selector';
-export {Navbar} from './navbar';
+} from './components/locale-selector/locale-selector';
+export {Navbar} from './components/navbar/navbar';
 export type {
   NavbarItem,
   NavbarLayer,
@@ -19,4 +19,4 @@ export type {
   NavbarMobileNavigation,
   NavbarProps,
   NavbarWidth,
-} from './navbar';
+} from './components/navbar/navbar';

@@ -1,6 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {GoogleSignInButton} from './google-sign-in-button';
-import {LocaleSelector, type LocaleSelectorDensity} from './locale-selector';
+import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
+import {LocaleSelector, type LocaleSelectorDensity} from '../locale-selector/locale-selector';
 import {Navbar, type NavbarProps} from './navbar';
 
 function BrandLogoPreview() {
