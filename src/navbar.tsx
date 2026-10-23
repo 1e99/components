@@ -15,7 +15,11 @@ export type NavbarWidth = "content" | "wide";
 export type NavbarLinkTreatment = "plain" | "underlined";
 export type NavbarLinkWeight = "bold" | "semibold";
 export type NavbarLayer = "above" | "standard";
-export type NavbarMobileNavigation = "disclosure" | "hidden";
+export type NavbarMobileNavigation = {
+  actions?: ReactNode;
+  menuLabel: string;
+  navigationLabel: string;
+};
 
 export type NavbarProps = {
   actions?: ReactNode;
@@ -24,10 +28,7 @@ export type NavbarProps = {
   layer?: NavbarLayer;
   linkTreatment?: NavbarLinkTreatment;
   linkWeight?: NavbarLinkWeight;
-  menuLabel?: string;
-  mobileActions?: ReactNode;
   mobileNavigation?: NavbarMobileNavigation;
-  mobileNavigationLabel?: string;
   navigationLabel: string;
   renderLink?: NavbarLinkRenderer;
   width?: NavbarWidth;
@@ -39,6 +40,9 @@ const baseLinkClassName =
 const underlinedLinkClassName =
   "relative after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-action-primary after:transition-transform after:duration-200 after:ease-brand hover:after:scale-x-100 focus-visible:after:scale-x-100";
 
+const mobileLinkClassName =
+  "flex min-h-12 items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus";
+
 export function Navbar({
   actions,
   brand,
@@ -46,10 +50,7 @@ export function Navbar({
   layer = "standard",
   linkTreatment = "plain",
   linkWeight = "semibold",
-  menuLabel,
-  mobileActions,
-  mobileNavigation = "hidden",
-  mobileNavigationLabel,
+  mobileNavigation,
   navigationLabel,
   renderLink,
   width = "content",
@@ -63,20 +64,17 @@ export function Navbar({
     .join(" ");
   const containerWidthClassName = width === "wide" ? "max-w-7xl" : "max-w-5xl";
   const layerClassName = layer === "above" ? "z-50" : "z-40";
-  const mobileLabel = mobileNavigationLabel ?? navigationLabel;
-  const mobileMenuLabel = menuLabel ?? navigationLabel;
-
-  const renderLinks = () =>
+  const renderLinks = (className: string) =>
     items.map((item) => (
       <Fragment key={item.href}>
         {renderLink ? (
           renderLink({
             children: item.label,
-            className: linkClassName,
+            className,
             href: item.href,
           })
         ) : (
-          <a className={linkClassName} href={item.href}>
+          <a className={className} href={item.href}>
             {item.label}
           </a>
         )}
@@ -92,26 +90,39 @@ export function Navbar({
       >
         <div className="shrink-0">{brand}</div>
         <nav aria-label={navigationLabel} className="hidden items-center gap-6 lg:flex">
-          {renderLinks()}
+          {renderLinks(linkClassName)}
         </nav>
         {actions}
-        {mobileNavigation === "disclosure" ? (
-          <details className="relative lg:hidden">
+        {mobileNavigation ? (
+          <details className="relative md:hidden">
             <summary
-              aria-label={mobileMenuLabel}
-              className="flex cursor-pointer list-none items-center gap-2 rounded-control px-3 py-2 text-content-secondary transition-colors hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
+              aria-label={mobileNavigation.menuLabel}
+              className="brand-action flex size-12 cursor-pointer list-none items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
             >
-              <span>{mobileMenuLabel}</span>
-              <span aria-hidden="true">☰</span>
+              <span className="sr-only">{mobileNavigation.menuLabel}</span>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                className="size-6"
+              >
+                <path d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
             </summary>
-            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 flex w-72 flex-col gap-4 rounded-card border border-border-subtle bg-surface-page p-4 shadow-focus">
-              <nav aria-label={mobileLabel} className="flex flex-col gap-4">
-                {renderLinks()}
-              </nav>
-              {mobileActions ? (
-                <div className="border-t border-border-subtle pt-4">{mobileActions}</div>
+            <nav
+              aria-label={mobileNavigation.navigationLabel}
+              className="absolute top-14 right-0 w-72 rounded-card border border-border-subtle bg-surface-raised p-3 shadow-float"
+            >
+              {renderLinks(mobileLinkClassName)}
+              {mobileNavigation.actions ? (
+                <div className="mt-2 space-y-3 border-t border-border-subtle pt-3">
+                  {mobileNavigation.actions}
+                </div>
               ) : null}
-            </div>
+            </nav>
           </details>
         ) : null}
       </div>

@@ -121,27 +121,49 @@ describe("Navbar", () => {
     );
   });
 
-  it("renders a mobile disclosure with its own navigation and actions", () => {
+  it("matches the domain mobile menu trigger, panel, links, and actions", () => {
     render(
       <Navbar
         brand={<a href="/">1e99</a>}
         items={[{ href: "/apps", label: "Apps" }]}
-        menuLabel="Open navigation menu"
-        mobileActions={<button type="button">Mobile sign in</button>}
-        mobileNavigation="disclosure"
-        mobileNavigationLabel="Mobile primary navigation"
+        mobileNavigation={{
+          actions: <button type="button">Mobile sign in</button>,
+          menuLabel: "Open navigation menu",
+          navigationLabel: "Mobile primary navigation",
+        }}
         navigationLabel="Primary navigation"
       />,
     );
 
-    expect(screen.getByText("Open navigation menu")).toBeInTheDocument();
+    const menuTrigger = screen.getByLabelText("Open navigation menu");
+    expect(menuTrigger.closest("details")).toHaveClass("relative", "md:hidden");
+    expect(menuTrigger).toHaveClass(
+      "brand-action",
+      "size-12",
+      "bg-action-primary",
+      "text-content-inverse",
+      "shadow-card",
+    );
 
     const mobileNavigation = screen.getByRole("navigation", {
       name: "Mobile primary navigation",
     });
+    expect(mobileNavigation).toHaveClass(
+      "absolute",
+      "top-14",
+      "right-0",
+      "w-72",
+      "bg-surface-raised",
+      "shadow-float",
+    );
     expect(within(mobileNavigation).getByRole("link", { name: "Apps" })).toHaveAttribute(
       "href",
       "/apps",
+    );
+    expect(within(mobileNavigation).getByRole("link", { name: "Apps" })).toHaveClass(
+      "min-h-12",
+      "px-3",
+      "font-semibold",
     );
     expect(screen.getByRole("button", { name: "Mobile sign in" })).toBeInTheDocument();
   });
@@ -153,13 +175,15 @@ describe("Navbar", () => {
       <Navbar
         brand={<a href="/">1e99</a>}
         items={[{ href: "/apps", label: "Apps" }]}
-        menuLabel="Open navigation menu"
-        mobileNavigation="disclosure"
+        mobileNavigation={{
+          menuLabel: "Open navigation menu",
+          navigationLabel: "Mobile primary navigation",
+        }}
         navigationLabel="Primary navigation"
       />,
     );
 
-    const menu = screen.getByText("Open navigation menu");
+    const menu = screen.getByLabelText("Open navigation menu");
     await user.click(menu);
 
     expect(menu.closest("details")).toHaveAttribute("open");
@@ -178,8 +202,6 @@ describe("Navbar", () => {
 
     expect(screen.getByRole("banner").firstElementChild).toHaveClass("max-w-7xl");
     expect(screen.getByRole("link", { name: "Apps" })).toHaveClass("after:scale-x-0");
-    expect(
-      screen.queryByRole("navigation", { name: "Mobile primary navigation" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Open navigation menu" })).not.toBeInTheDocument();
   });
 });

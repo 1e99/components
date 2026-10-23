@@ -15,7 +15,6 @@ const meta = {
   argTypes: {
     actions: { control: false },
     brand: { control: false },
-    mobileActions: { control: false },
     renderLink: { control: false },
   },
   render: (args) => (
@@ -34,11 +33,6 @@ const meta = {
           1e99
         </a>
       }
-      mobileActions={
-        <a className="block rounded-control bg-action-primary px-3 py-2 text-center text-sm font-semibold text-white" href="/account">
-          Área do cliente
-        </a>
-      }
     />
   ),
 } satisfies Meta<typeof Navbar>;
@@ -54,9 +48,15 @@ export const DomainWebsite: Story = {
       { href: "/about", label: "Sobre" },
     ],
     linkTreatment: "underlined",
-    menuLabel: "Abrir menu de navegação",
-    mobileNavigation: "disclosure",
-    mobileNavigationLabel: "Navegação principal móvel",
+    mobileNavigation: {
+      actions: (
+        <a className="block rounded-control bg-action-primary px-3 py-2 text-center text-sm font-semibold text-white" href="/account">
+          Área do cliente
+        </a>
+      ),
+      menuLabel: "Abrir menu de navegação",
+      navigationLabel: "Navegação principal móvel",
+    },
     navigationLabel: "Navegação principal",
     width: "content",
   },
