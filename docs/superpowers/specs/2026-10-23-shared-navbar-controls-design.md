@@ -10,8 +10,9 @@ ou tradução para este pacote.
 ## Escopo
 
 - `GoogleSignInButton` reproduz o botão do `domain-website` em toda situação;
-  não possui variante visual. Ele recebe apenas atributos comportamentais de
-  botão e um rótulo opcional. A autenticação continua no aplicativo.
+  não possui variante visual. Ele recebe atributos comportamentais de botão e
+  um rótulo obrigatório, já traduzido pelo aplicativo. A autenticação continua
+  no aplicativo.
 - `LocaleSelector` reproduz o disclosure de idioma dos sites e possui duas
   variantes que já existem no currículo:
   - `navigation`: idioma atual e links de navegação, para a navbar;

@@ -97,10 +97,11 @@ outro roteador sem acoplar o pacote a ele.
 ### Controles de header
 
 `GoogleSignInButton` é o único tratamento visual para entrar com Google e
-segue o botão do `domain-website` em todos os usos. Recebe atributos
-comportamentais nativos de botão (`onClick`, `disabled`, `aria-*`) e `label`,
-mas não aceita variante nem `className`; autenticação e estado de carregamento
-são do consumidor.
+segue o botão do `domain-website` em todos os usos. `label` é obrigatório e
+deve receber a string já traduzida pelo consumidor; também aceita atributos
+comportamentais nativos de botão (`onClick`, `disabled`, `aria-*`). Não aceita
+variante nem `className`; autenticação e estado de carregamento são do
+consumidor.
 
 `LocaleSelector` recebe os rótulos e códigos de idioma já traduzidos pelo
 consumidor. Sua variante `navigation` recebe opções com `href`, expõe o idioma

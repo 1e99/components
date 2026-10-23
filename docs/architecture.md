@@ -65,8 +65,8 @@ domain-website; o currículo não o fornece.
 
 `GoogleSignInButton` fixa em todo o ecossistema a apresentação do botão do
 `domain-website`: superfície elevada, borda sutil, ícone oficial multicolorido
-e tipografia semibold. Ele não possui variante visual; os aplicativos recebem
-apenas `label` e os atributos comportamentais nativos.
+e tipografia semibold. Ele não possui variante visual; `label` é obrigatório
+e já deve chegar traduzido, junto dos atributos comportamentais nativos.
 
 `LocaleSelector` é uma união discriminada, para não confundir duas semânticas
 que parecem iguais visualmente:

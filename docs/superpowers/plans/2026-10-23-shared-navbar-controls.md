@@ -36,7 +36,7 @@
 **Interfaces:**
 - Produces: `GoogleSignInButton` e `GoogleSignInButtonProps`.
 
-- [ ] Escrever testes que esperem o rótulo padrão, SVG de quatro paths, `type="button"`, atributos comportamentais e o tratamento visual do domain.
+- [ ] Escrever testes que esperem rótulo fornecido pelo consumidor, SVG de quatro paths, `type="button"`, atributos comportamentais e o tratamento visual do domain.
 - [ ] Rodar `pnpm test -- src/google-sign-in-button.test.tsx` e confirmar falha de módulo/export ausente.
 - [ ] Implementar `GoogleSignInButton(props: GoogleSignInButtonProps)` sem prop de variante ou `className` e exportá-lo pelo índice.
 - [ ] Rodar o teste focal e `pnpm test`; confirmar sucesso.
