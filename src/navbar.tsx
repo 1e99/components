@@ -97,7 +97,7 @@ export function Navbar({
           <details className="relative md:hidden">
             <summary
               aria-label={mobileNavigation.menuLabel}
-              className="brand-action flex size-12 cursor-pointer list-none items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
+              className="flex size-12 cursor-pointer list-none items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
             >
               <span className="sr-only">{mobileNavigation.menuLabel}</span>
               <svg

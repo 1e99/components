@@ -138,11 +138,12 @@ describe("Navbar", () => {
     const menuTrigger = screen.getByLabelText("Open navigation menu");
     expect(menuTrigger.closest("details")).toHaveClass("relative", "md:hidden");
     expect(menuTrigger).toHaveClass(
-      "brand-action",
       "size-12",
       "bg-action-primary",
       "text-content-inverse",
       "shadow-card",
+      "transition-[translate,scale,background-color]",
+      "active:scale-[0.97]",
     );
 
     const mobileNavigation = screen.getByRole("navigation", {

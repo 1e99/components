@@ -2,6 +2,14 @@
 
 @source "../src";
 
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./public/fonts/Inter-Variable.ttf") format("truetype");
+}
+
 @theme inline {
   --color-brand-cloud: #f3f8fa;
   --color-brand-navy: #071d35;
@@ -14,6 +22,8 @@
   --color-surface-page: #f3f8fa;
   --color-surface-raised: #f8fcff;
   --color-surface-subtle: color-mix(in srgb, #071d35 5%, #f8fcff);
+  --font-body: "Inter", Arial, sans-serif;
+  --font-sans: var(--font-body);
   --text-label: 0.75rem;
   --radius-card: 0px;
   --radius-control: 0px;
@@ -29,4 +39,5 @@
 body {
   min-height: 100vh;
   background: #f3f8fa;
+  font-family: var(--font-body);
 }
