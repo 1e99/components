@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {describe, expect, it} from 'vitest';
 import type {NavbarProps} from './navbar';
 import navbarMeta, {Curriculo, DomainWebsite} from './navbar.stories';
@@ -51,7 +51,9 @@ describe('Navbar stories', () => {
         ) ?? null,
     );
 
-    expect(screen.getByLabelText('Idioma: Português').tagName).toBe('SUMMARY');
+    const languageTrigger = screen.getByLabelText('Idioma: Português');
+
+    expect(languageTrigger.tagName).toBe('SUMMARY');
     const appsIcon = screen.getByRole('link', {name: 'Mais aplicativos'}).querySelector('svg');
     const googleButton = screen.getByRole('button', {name: 'Entrar com Google'});
 
@@ -62,5 +64,10 @@ describe('Navbar stories', () => {
         'bg-surface-raised',
         'font-semibold',
     );
+
+    fireEvent.click(languageTrigger);
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    expect(screen.getByLabelText('Idioma: English')).toBeVisible();
   });
 });

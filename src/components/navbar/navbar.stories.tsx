@@ -31,12 +31,14 @@ const localeOptions = [
 
 function LocalePreview({
   density = 'standard',
-  triggerAriaLabel = 'Idioma',
+  getTriggerAriaLabel,
 }: {
   density?: LocaleSelectorDensity;
-  triggerAriaLabel?: string;
+  getTriggerAriaLabel?: (selectedLabel: string) => string;
 }) {
   const [value, setValue] = useState('pt');
+  const selectedLabel =
+    localeOptions.find((option) => option.value === value)?.label ?? value;
 
   return (
     <LocaleSelector
@@ -44,7 +46,7 @@ function LocalePreview({
       label="Idioma"
       onValueChange={setValue}
       options={localeOptions}
-      triggerAriaLabel={triggerAriaLabel}
+      triggerAriaLabel={getTriggerAriaLabel?.(selectedLabel)}
       value={value}
       variant="navigation"
     />
@@ -63,7 +65,10 @@ function DomainActions() {
 function CurriculumActions() {
   return (
     <div className="flex items-center gap-2 sm:gap-3">
-      <LocalePreview density="compact-mobile" triggerAriaLabel="Idioma: Português" />
+      <LocalePreview
+        density="compact-mobile"
+        getTriggerAriaLabel={(selectedLabel) => `Idioma: ${selectedLabel}`}
+      />
       <a
         aria-label="Mais aplicativos"
         className="hidden min-h-11 items-center justify-center gap-2 rounded-control px-2 text-label font-bold text-content-secondary transition-colors hover:bg-surface-subtle hover:text-content-primary sm:inline-flex sm:px-3"
