@@ -125,4 +125,7 @@ ficam em `test/`.
 
 ## Licença
 
-`UNLICENSED`.
+Este pacote usa a [1e99 Components Use License](LICENSE). Você pode usar,
+integrar e redistribuir cópias inalteradas, inclusive em aplicações comerciais.
+Não é permitido modificar o pacote, criar derivados ou distribuir versões
+alteradas. Esta não é uma licença open source.

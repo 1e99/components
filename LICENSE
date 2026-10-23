@@ -1,0 +1,59 @@
+1E99 COMPONENTS USE LICENSE
+Version 1.0
+
+Copyright (c) 2026 1e99. All rights reserved except as expressly granted
+below.
+
+1. Definitions
+
+"Package" means the software, source code, compiled code, documentation, and
+other materials distributed under this license.
+
+"Standard Version" means the Package as distributed by the copyright holder,
+without modification.
+
+2. Grant of Permission
+
+Subject to this license, each recipient is granted a worldwide, non-exclusive,
+royalty-free license to use, reproduce, install, and integrate the Standard
+Version into private, public, and commercial applications.
+
+You may distribute or make available unmodified copies of the Standard Version,
+including as part of a larger application, if you preserve all copyright,
+trademark, and license notices and include a copy of this license with the
+distributed Package.
+
+Mechanical transformations performed by ordinary installation, bundling,
+minification, or build tools are permitted when they do not alter the Package's
+functionality or create a modified version of the Package.
+
+3. Restrictions
+
+You may not modify, adapt, translate, transform, create derivative works from,
+or distribute a modified version of the Package, whether in source or compiled
+form. You may not remove or alter copyright, trademark, or license notices.
+
+You may write and distribute independent software that uses the Package through
+its public interfaces. Such independent software is not a modification of the
+Package solely because it imports, links to, bundles, or invokes the Standard
+Version.
+
+4. Trademarks
+
+This license does not grant permission to use the copyright holder's names,
+logos, trademarks, or service marks except as necessary to identify an
+unmodified copy of the Package.
+
+5. Termination
+
+The permissions granted by this license terminate automatically if you fail to
+comply with its terms. On termination, you must stop using and distributing the
+Package, except to the extent required by applicable law.
+
+6. Disclaimer and Limitation of Liability
+
+THE PACKAGE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE, TITLE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED BY LAW,
+THE COPYRIGHT HOLDER WILL NOT BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM OR RELATED TO THE PACKAGE OR THIS LICENSE.
