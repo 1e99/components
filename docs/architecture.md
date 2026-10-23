@@ -38,6 +38,19 @@ mas recebe rótulos, destinos e seleção pelo consumidor. Isso evita acoplament
 entre os aplicativos e mantém os componentes compatíveis com React fora de
 Next.js.
 
+## Organização do pacote
+
+Cada componente ocupa `src/components/<nome>/`, mantendo implementação,
+testes e story como uma única unidade de manutenção. `src/index.ts` continua
+como a única fronteira pública do pacote, e `test/` reúne somente testes que
+não pertencem a um componente específico. Essa divisão não altera os imports
+dos consumidores.
+
+Os ícones internos usam `react-icons` 5.7.0 — `FcGoogle` e os ícones Lucide
+`LuChevronDown`, `LuMenu` e `LuExternalLink` — a mesma biblioteca usada pelos
+dois projetos fonte. Eles são decorativos (`aria-hidden`); os rótulos
+acessíveis vêm das props internacionalizadas de cada consumidor.
+
 ## API proposta
 
 `Navbar` recebe:
@@ -105,6 +118,10 @@ cobrem semântica, layout de regiões irmãs, variantes, menu móvel e os estado
 ativos dos controles. Storybook também tem os addons Vitest e accessibility
 para tornar as stories pontos de partida de teste visual e de interação.
 
+ESLint 9 usa `eslint-config-google` junto das regras TypeScript e React.
+`pnpm lint` verifica o padrão, `pnpm lint:fix` aplica as correções automáticas
+e Husky exige `pnpm lint` e `pnpm test` antes de cada commit local.
+
 ## Publicação
 
 O destino recomendado é o registro público npm, como `@1e99/components`.
@@ -112,7 +129,8 @@ Em 2026-10-23 esse nome não retornou uma versão pública no registro. A
 publicação exigirá que a organização `@1e99` exista no npm, autenticação com
 permissão de publicação e `npm publish --access public`. O pacote publicará
 somente `dist/`, terá `react`, `react-dom` e `tailwindcss` como peer
-dependencies, e usará `exports` para JavaScript e tipos.
+dependencies, além de `react-icons`, e usará `exports` para JavaScript e
+tipos.
 
 GitHub Packages permanece alternativa privada, mas exigiria configuração de
 registro e token em todos os consumidores; npm público é mais simples para os

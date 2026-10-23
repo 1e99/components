@@ -13,7 +13,9 @@ Após a primeira publicação pública, instale o pacote no app consumidor:
 pnpm add @1e99/components
 ```
 
-O pacote declara `react`, `react-dom` e `tailwindcss` como peer dependencies.
+O pacote declara `react`, `react-dom`, `react-icons` e `tailwindcss` como
+peer dependencies. Os apps 1e99 já usam `react-icons` 5.7.0; ele fornece os
+ícones Google e Lucide que o pacote renderiza, sem duplicar SVGs manualmente.
 
 ### Tailwind CSS 4
 
@@ -136,6 +138,8 @@ SweetAlert nem de outro gerenciador de modal.
 ## Desenvolvimento e testes
 
 ```sh
+pnpm lint
+pnpm lint:fix
 pnpm storybook
 pnpm test
 pnpm test:stories
@@ -144,11 +148,23 @@ pnpm build-storybook
 pnpm pack:check
 ```
 
+`pnpm lint` aplica o padrão Google para TypeScript e React; `pnpm lint:fix`
+corrige automaticamente o que for seguro. O Husky executa `pnpm lint` e
+`pnpm test` antes de cada commit local, portanto ambos devem passar antes de
+o histórico ser criado.
+
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
 exibem os perfis fiéis dos dois aplicativos e as duas variantes de
 `LocaleSelector`, incluindo o SVG oficial somente como asset de demonstração
 do Storybook. Elas são verificadas em Chromium por `pnpm test:stories`, com
 os addons oficiais de acessibilidade e Vitest.
+
+## Organização do código
+
+Cada componente é uma unidade em `src/components/<nome>/`: implementação,
+testes e story (quando houver) ficam juntos. `src/index.ts` é o único ponto de
+entrada público; mudar a organização interna não altera como os aplicativos
+importam `@1e99/components`. Testes transversais ficam em `test/`.
 
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes
 do teste de stories:
