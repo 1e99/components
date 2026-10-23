@@ -63,6 +63,64 @@ describe("Navbar", () => {
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
   });
 
+  it("keeps the brand, desktop navigation, and actions as sibling regions", () => {
+    render(
+      <Navbar
+        actions={<div data-testid="navbar-actions">Actions</div>}
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        navigationLabel="Primary navigation"
+      />,
+    );
+
+    const container = screen.getByRole("banner").firstElementChild;
+    expect(container?.children).toHaveLength(3);
+    expect(container?.children[0]).toContainElement(
+      screen.getByRole("link", { name: "1e99" }),
+    );
+    expect(container?.children[1]).toBe(
+      screen.getByRole("navigation", { name: "Primary navigation" }),
+    );
+    expect(container?.children[2]).toContainElement(screen.getByTestId("navbar-actions"));
+  });
+
+  it("matches the domain and curriculum desktop style variants", () => {
+    const { rerender } = render(
+      <Navbar
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        layer="above"
+        linkTreatment="underlined"
+        linkWeight="semibold"
+        navigationLabel="Primary navigation"
+      />,
+    );
+
+    expect(screen.getByRole("banner")).toHaveClass("z-50");
+    expect(screen.getByRole("link", { name: "Apps" })).toHaveClass(
+      "font-semibold",
+      "after:h-0.5",
+      "after:bg-action-primary",
+    );
+
+    rerender(
+      <Navbar
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "#models", label: "Models" }]}
+        layer="standard"
+        linkTreatment="plain"
+        linkWeight="bold"
+        navigationLabel="Primary navigation"
+      />,
+    );
+
+    expect(screen.getByRole("banner")).toHaveClass("z-40");
+    expect(screen.getByRole("link", { name: "Models" })).toHaveClass("font-bold");
+    expect(screen.getByRole("link", { name: "Models" })).not.toHaveClass(
+      "after:scale-x-0",
+    );
+  });
+
   it("renders a mobile disclosure with its own navigation and actions", () => {
     render(
       <Navbar
