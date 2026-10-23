@@ -93,7 +93,9 @@ conteúdo dentro do botão que o pacote controla. `renderTrigger` recebe a opç�
 selecionada e o valor atual. Por isso, um consumidor de idiomas aplica `lang`
 no conteúdo que renderiza, sem acoplar idioma ao tipo base. O componente
 preserva `standard`, `compact`, `compact-mobile`, `whiteSurface`,
-`triggerAriaLabel`, botões com `aria-pressed` e `select-none`.
+botões com `aria-pressed` e `select-none`. Quando `triggerAriaLabel` não é
+fornecida, o conteúdo selecionado é o nome acessível do gatilho; aplicações
+podem fornecer um nome mais descritivo que acompanhe o valor controlado.
 
 ## Tailwind
 

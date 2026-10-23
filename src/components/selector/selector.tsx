@@ -72,7 +72,7 @@ function SelectorTrigger<TOption extends SelectorOption>({
   densityClassName: string;
   renderTrigger?: (context: SelectorRenderTriggerContext<TOption>) => ReactNode;
   selectedOption: TOption | undefined;
-  triggerAriaLabel: string;
+  triggerAriaLabel?: string;
   value: string;
 }) {
   const triggerContent = renderTrigger?.({selectedOption, value}) ??
@@ -96,7 +96,7 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   options,
   renderOption,
   renderTrigger,
-  triggerAriaLabel = label,
+  triggerAriaLabel,
   value,
   whiteSurface = false,
 }: SelectorProps<TOption>) {

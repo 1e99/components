@@ -140,6 +140,38 @@ describe('Selector', () => {
     expect(screen.getByText('unknown', {selector: 'summary span'})).toBeVisible();
   });
 
+  it('announces its visible controlled value when no custom trigger label is supplied', () => {
+    function LanguageExample() {
+      const [value, setValue] = useState('pt');
+
+      return (
+        <Selector
+          label="Idioma"
+          onValueChange={setValue}
+          options={languageOptions}
+          value={value}
+        />
+      );
+    }
+
+    render(<LanguageExample />);
+
+    const portugueseTrigger = screen
+        .getByText('Português', {selector: 'summary span'})
+        .closest('summary');
+
+    expect(portugueseTrigger).toHaveAccessibleName('Português');
+
+    fireEvent.click(portugueseTrigger as HTMLElement);
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    const englishTrigger = screen
+        .getByText('English', {selector: 'summary span'})
+        .closest('summary');
+
+    expect(englishTrigger).toHaveAccessibleName('English');
+  });
+
   it.each([
     ['standard', 'w-full', 'min-h-12'],
     ['compact', 'w-auto', 'h-12'],

@@ -78,7 +78,7 @@ describe('Navbar stories', () => {
     );
 
     expect(screen.getAllByRole('link', {name: 'Biblioteca'})).toHaveLength(2);
-    expect(getSelectorTriggers('Escolher idioma')).toHaveLength(2);
+    expect(getSelectorTriggers('Escolher idioma: Français')).toHaveLength(2);
     expect(screen.getAllByRole('button', {name: 'Continuar com Google'})).toHaveLength(2);
 
     fireEvent.click(screen.getByLabelText('Abrir menu de navegação'));
@@ -92,7 +92,7 @@ describe('Navbar stories', () => {
         {name: 'Biblioteca'},
     )).toBeVisible();
     const mobileSelector = within(mobileNavigation)
-        .getAllByLabelText('Escolher idioma')
+        .getAllByLabelText('Escolher idioma: Français')
         .find((element) => element.tagName === 'SUMMARY');
 
     expect(mobileSelector).toBeVisible();

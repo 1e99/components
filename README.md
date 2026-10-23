@@ -147,7 +147,9 @@ o conteúdo interno do botão que o pacote controla. `renderTrigger` recebe
 forma, atributos como `lang` ficam no conteúdo do aplicativo consumidor, não
 no tipo genérico do pacote. O componente preserva botões com `aria-pressed`,
 `select-none`, as densidades `standard` (padrão), `compact` e
-`compact-mobile`, `whiteSurface` e `triggerAriaLabel`.
+`compact-mobile` e `whiteSurface`. Sem `triggerAriaLabel`, o nome acessível do
+gatilho vem do conteúdo selecionado visível; use essa prop quando o consumidor
+precisar de um nome mais descritivo e atualize-o junto do valor controlado.
 
 `Navbar` não recebe props de idioma nem de autenticação. `items`, `actions` e
 `mobileNavigation.actions` são os pontos de composição para qualquer controle

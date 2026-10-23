@@ -69,6 +69,12 @@ function NavbarControls({
   showSelector: boolean;
   value: string;
 }) {
+  const selectedOption = selectorOptions.find(
+      (option) => option.value === value,
+  );
+  const triggerAriaLabel = selectedOption ?
+    `${selectorLabel}: ${selectedOption.label}` : selectorLabel;
+
   return (
     <>
       {showSelector ? (
@@ -76,6 +82,7 @@ function NavbarControls({
           label={selectorLabel}
           onValueChange={onValueChange}
           options={selectorOptions}
+          triggerAriaLabel={triggerAriaLabel}
           value={value}
         />
       ) : null}
