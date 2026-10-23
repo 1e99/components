@@ -81,24 +81,14 @@ domain-website; o currículo não o fornece.
 e tipografia semibold. Ele não possui variante visual; `label` é obrigatório
 e já deve chegar traduzido, junto dos atributos comportamentais nativos.
 
-`LocaleSelector` é uma união discriminada, para não confundir duas semânticas
-que parecem iguais visualmente:
-
-| Variante | Itens | Uso | Estado ativo |
-| --- | --- | --- | --- |
-| `navigation` | botões controlados | navbar e páginas legais | `aria-pressed` |
-| `document` | botões controlados | diálogo de geração do currículo | `aria-pressed` |
-
-As duas variantes são controladas por `value` e `onValueChange`. Escolher um
-idioma fecha o disclosure e informa o novo valor, mas não muda a aplicação por
-conta própria; o consumidor decide se deve atualizar estado, rotear ou gravar
-uma preferência. A variante de navegação preserva as densidades reais do
+`LocaleSelector` é um único disclosure controlado por `value` e
+`onValueChange`. Escolher um idioma fecha o menu e informa o novo valor, mas
+não muda a aplicação por conta própria; o consumidor decide se deve atualizar
+estado, rotear ou gravar uma preferência. Ele preserva as densidades reais do
 currículo: `standard`, `compact` e `compact-mobile`; `whiteSurface` cobre o
-header branco do editor. A variante de documento usa menu fixo, alinhado ao
-gatilho, para reproduzir o diálogo de PDF. Ela não importa nem controla
-SweetAlert: um consumidor que use uma camada de modal específica decide onde
-montar o componente. Gatilhos e opções usam `select-none` para evitar seleção
-acidental de texto durante a interação.
+header branco do editor. Gatilhos e opções usam `select-none` para evitar
+seleção acidental de texto durante a interação. Controles específicos de
+diálogo ou geração de PDF permanecem no aplicativo consumidor.
 
 ## Tailwind
 

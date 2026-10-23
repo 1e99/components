@@ -76,7 +76,6 @@ function handleLocaleChange(nextLocale: string) {
         onValueChange={handleLocaleChange}
         options={localeOptions}
         value={locale}
-        variant="navigation"
       />
       <GoogleSignInButton label={t("signInWithGoogle")} onClick={startGoogleLogin} />
     </div>
@@ -118,36 +117,14 @@ variante nem `className`; autenticação e estado de carregamento são do
 consumidor.
 
 `LocaleSelector` recebe os rótulos e códigos de idioma já traduzidos pelo
-consumidor. As duas variantes são controladas por `value` e `onValueChange`:
-o componente chama o callback, fecha o disclosure e não presume navegação. O
-aplicativo decide se a troca atualiza estado, rota ou uma preferência
-persistida. A variante `navigation` apresenta botões com `aria-pressed` e
-aceita `density` `standard` (padrão), `compact` ou `compact-mobile`, além de
-`whiteSurface` para o editor do currículo. `triggerAriaLabel` permite
-conservar o rótulo acessível próprio de cada aplicativo.
-
-Para o diálogo de PDF, use `variant="document"`. Ela também apresenta botões
-com `aria-pressed`, fecha o disclosure após a escolha e posiciona o menu de
-modo fixo igual ao currículo:
-
-```tsx
-<LocaleSelector
-  label="Idioma do currículo"
-  onValueChange={setDocumentLocale}
-  options={[
-    { value: "pt", label: "Português", languageTag: "pt-BR" },
-    { value: "en", label: "English", languageTag: "en" },
-    { value: "es", label: "Español", languageTag: "es" },
-  ]}
-  triggerAriaLabel={`Idioma do currículo: ${documentLocaleLabel}`}
-  value={documentLocale}
-  variant="document"
-/>
-```
-
-Se um diálogo de terceiro limitar `overflow`, a integração do aplicativo deve
-montar esse controle na camada apropriada do diálogo; o pacote não depende de
-SweetAlert nem de outro gerenciador de modal.
+consumidor. É controlado por `value` e `onValueChange`: chama o callback,
+fecha o disclosure e não presume navegação. O aplicativo decide se a troca
+atualiza estado, rota ou uma preferência persistida. Ele apresenta botões com
+`aria-pressed` e aceita `density` `standard` (padrão), `compact` ou
+`compact-mobile`, além de `whiteSurface` para o editor do currículo.
+`triggerAriaLabel` permite conservar o rótulo acessível próprio de cada
+aplicativo. Controles de idioma específicos de diálogo ou PDF pertencem ao
+aplicativo que os utiliza.
 
 ## Desenvolvimento e testes
 
