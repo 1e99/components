@@ -1,8 +1,9 @@
 # @1e99/components
 
-Componentes React compartilhados pelos produtos 1e99. O primeiro componente é
-`Navbar`, extraído fielmente das implementações de `domain-website` e
-`curriculo` sem introduzir dependência de Next.js, autenticação ou i18n.
+Componentes React compartilhados pelos produtos 1e99. `Navbar`,
+`GoogleSignInButton` e `LocaleSelector` foram extraídos fielmente de
+`domain-website` e `curriculo`, sem introduzir dependência de Next.js,
+autenticação, i18n ou geração de PDF.
 
 ## Instalação futura
 
@@ -38,7 +39,17 @@ O pacote não redefine esses tokens nem importa CSS global no aplicativo.
 ## Uso
 
 ```tsx
-import { Navbar } from "@1e99/components";
+import {
+  GoogleSignInButton,
+  LocaleSelector,
+  Navbar,
+} from "@1e99/components";
+
+const localeOptions = [
+  { value: "pt", label: "Português", languageTag: "pt-BR", href: "/pt" },
+  { value: "en", label: "English", languageTag: "en", href: "/en" },
+  { value: "es", label: "Español", languageTag: "es", href: "/es" },
+];
 
 <Navbar
   brand={<a href="/"><BrandLogo /></a>}
@@ -52,8 +63,8 @@ import { Navbar } from "@1e99/components";
   )}
   actions={
     <div className="hidden items-center gap-3 md:flex">
-      <LocaleSwitcher />
-      <AccountActions />
+      <LocaleSelector label="Idioma" options={localeOptions} value="pt" variant="navigation" />
+      <GoogleSignInButton onClick={startGoogleLogin} />
     </div>
   }
   width="content"
@@ -83,6 +94,44 @@ elevado); ele fica ausente no perfil do currículo. `renderLink` recebe `href`,
 `children` e `className`, permitindo usar `next/link`, `next-intl/link` ou
 outro roteador sem acoplar o pacote a ele.
 
+### Controles de header
+
+`GoogleSignInButton` é o único tratamento visual para entrar com Google e
+segue o botão do `domain-website` em todos os usos. Recebe atributos
+comportamentais nativos de botão (`onClick`, `disabled`, `aria-*`) e `label`,
+mas não aceita variante nem `className`; autenticação e estado de carregamento
+são do consumidor.
+
+`LocaleSelector` recebe os rótulos e códigos de idioma já traduzidos pelo
+consumidor. Sua variante `navigation` recebe opções com `href`, expõe o idioma
+ativo com `aria-current="page"` e aceita `density` `standard` (padrão),
+`compact` ou `compact-mobile`, além de `whiteSurface` para o editor do
+currículo. `triggerAriaLabel` permite conservar o rótulo acessível próprio de
+cada aplicativo.
+
+Para o diálogo de PDF, use `variant="document"`, sem `href`, com estado
+controlado e `onValueChange`. Ela apresenta botões com `aria-pressed`, fecha
+o disclosure após a escolha e posiciona o menu de modo fixo igual ao currículo:
+
+```tsx
+<LocaleSelector
+  label="Idioma do currículo"
+  onValueChange={setDocumentLocale}
+  options={[
+    { value: "pt", label: "Português", languageTag: "pt-BR" },
+    { value: "en", label: "English", languageTag: "en" },
+    { value: "es", label: "Español", languageTag: "es" },
+  ]}
+  triggerAriaLabel={`Idioma do currículo: ${documentLocaleLabel}`}
+  value={documentLocale}
+  variant="document"
+/>
+```
+
+Se um diálogo de terceiro limitar `overflow`, a integração do aplicativo deve
+montar esse controle na camada apropriada do diálogo; o pacote não depende de
+SweetAlert nem de outro gerenciador de modal.
+
 ## Desenvolvimento e testes
 
 ```sh
@@ -95,9 +144,10 @@ pnpm pack:check
 ```
 
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
-exibem os perfis fiéis dos dois aplicativos, incluindo o SVG oficial somente
-como asset de demonstração do Storybook, e são verificadas em Chromium por
-`pnpm test:stories`, com os addons oficiais de acessibilidade e Vitest.
+exibem os perfis fiéis dos dois aplicativos e as duas variantes de
+`LocaleSelector`, incluindo o SVG oficial somente como asset de demonstração
+do Storybook. Elas são verificadas em Chromium por `pnpm test:stories`, com
+os addons oficiais de acessibilidade e Vitest.
 
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes
 do teste de stories:

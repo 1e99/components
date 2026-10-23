@@ -3,12 +3,13 @@
 ## Objetivo inicial
 
 Este repositório reúne componentes React reutilizáveis pelos aplicativos 1e99.
-O primeiro é a navbar já aplicada, com pequenas diferenças, em
-`domain-website` e `curriculo`.
+Ele iniciou com a navbar já aplicada, com pequenas diferenças, em
+`domain-website` e `curriculo`; agora também concentra os controles visuais de
+idioma e entrada com Google usados por esses headers.
 
 O pacote será independente de Next.js. Logo, links localizados, imagem da
-marca, autenticação, seletor de idioma e ações de produto continuam sendo
-fornecidos pelo aplicativo consumidor.
+marca, autenticação, traduções, rotas e regras de geração de documento
+continuam sendo fornecidos pelo aplicativo consumidor.
 
 ## Estudo das navbars existentes
 
@@ -31,8 +32,11 @@ mesmos tokens da marca.
 | Logo | `next/image` local | `next/image` local | slot injetado pelo consumidor |
 
 Não serão compartilhados autenticação, `next-intl`, `next/image`, rotas,
-traduções, ícones de ações ou regras de conta. Isso evita acoplamento entre
-os aplicativos e mantém a navbar compatível com React fora de Next.js.
+traduções, ícones de ações ou regras de conta. `GoogleSignInButton` centraliza
+somente a apresentação do login; `LocaleSelector` centraliza o disclosure,
+mas recebe rótulos, destinos e seleção pelo consumidor. Isso evita acoplamento
+entre os aplicativos e mantém os componentes compatíveis com React fora de
+Next.js.
 
 ## API proposta
 
@@ -57,6 +61,28 @@ estado ou de framework.
 existe quando `mobileNavigation` é fornecido e usa `md:hidden`, igual ao
 domain-website; o currículo não o fornece.
 
+## Controles compartilhados
+
+`GoogleSignInButton` fixa em todo o ecossistema a apresentação do botão do
+`domain-website`: superfície elevada, borda sutil, ícone oficial multicolorido
+e tipografia semibold. Ele não possui variante visual; os aplicativos recebem
+apenas `label` e os atributos comportamentais nativos.
+
+`LocaleSelector` é uma união discriminada, para não confundir duas semânticas
+que parecem iguais visualmente:
+
+| Variante | Itens | Uso | Estado ativo |
+| --- | --- | --- | --- |
+| `navigation` | links com `href` | navbar e páginas legais | `aria-current="page"` |
+| `document` | botões controlados | diálogo de geração do currículo | `aria-pressed` |
+
+A variante de navegação preserva as densidades reais do currículo:
+`standard`, `compact` e `compact-mobile`; `whiteSurface` cobre o header branco
+do editor. A variante de documento usa menu fixo, alinhado ao gatilho, para
+reproduzir o diálogo de PDF. Ela não importa nem controla SweetAlert: um
+consumidor que use uma camada de modal específica decide onde montar o
+componente.
+
 ## Tailwind
 
 O componente será escrito com utilities Tailwind 4 e consumirá os tokens de
@@ -71,12 +97,13 @@ da folha CSS no aplicativo consumidor.
 
 ## Visualização e qualidade
 
-Storybook React/Vite exibe os perfis visuais fiéis dos dois headers, com o SVG
-oficial de logo apenas em `.storybook/public`, viewport móvel para o
-disclosure e os tokens reais de superfície, sombra e tipografia. Vitest e
-Testing Library cobrem semântica, layout de regiões irmãs, variantes e menu
-móvel. Storybook também tem os addons Vitest e accessibility para tornar as
-stories pontos de partida de teste visual e de interação.
+Storybook React/Vite exibe os perfis visuais fiéis dos dois headers e stories
+próprias do seletor de idioma da navbar e do diálogo de PDF, com o SVG oficial
+de logo apenas em `.storybook/public`, viewport móvel para o disclosure e os
+tokens reais de superfície, sombra e tipografia. Vitest e Testing Library
+cobrem semântica, layout de regiões irmãs, variantes, menu móvel e os estados
+ativos dos controles. Storybook também tem os addons Vitest e accessibility
+para tornar as stories pontos de partida de teste visual e de interação.
 
 ## Publicação
 
