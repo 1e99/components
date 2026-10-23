@@ -205,14 +205,44 @@ configuração de registry e token em cada consumidor. GitHub Packages é uma
 alternativa para distribuição privada, mas exige registry e token GitHub nos
 aplicativos.
 
-Antes do primeiro release, um administrador da organização `1e99` no npm deve
-confirmar a política de licença (o pacote está `UNLICENSED` por enquanto),
-criar ou habilitar o escopo, autenticar-se e publicar:
+`.github/workflows/ci.yml` valida pull requests e pushes para `main` com lint,
+tipos, testes, build, Storybook e prévia do tarball. `.github/workflows/publish.yml`
+repete essas verificações e publica somente quando uma tag `vX.Y.Z` corresponde
+exatamente à versão em `package.json`.
+
+### Primeiro release pelo CI
+
+O bootstrap usa temporariamente o secret de repositório `NPM_TOKEN`. Crie-o no
+npm como token granular, com **Bypass two-factor authentication**, permissão
+**Read and write (publish and stage)** limitada ao escopo `@1e99` e expiração
+curta. Salve-o em GitHub → `1e99/components` → Settings → Secrets and variables
+→ Actions como `NPM_TOKEN`. Nunca grave ou compartilhe esse valor por chat,
+issues, commits ou logs.
+
+Envie os commits e a tag correspondente à versão:
 
 ```sh
-pnpm pack:check
-npm publish --access public
+git push origin main
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
-O comando de publicação não faz parte deste repositório nem foi executado por
-esta implementação.
+O workflow recusa a tag se `package.json` não estiver em `0.1.0` e publica com
+`publishConfig.access: public` se todas as verificações passarem.
+
+### Migrar para Trusted Publishing
+
+Depois que a primeira release for publicada, habilite 2FA na conta npm e abra
+as configurações de `@1e99/components` no npm. Em **Trusted Publisher**, escolha
+GitHub Actions e informe organização `1e99`, repositório `components` e arquivo
+de workflow `publish.yml`; permita publicação direta com `npm publish`.
+
+Em seguida, apague o secret `NPM_TOKEN` do GitHub e revogue o token no npm. As
+tags futuras usarão OIDC com credenciais efêmeras do GitHub Actions e gerarão
+provenance automaticamente. Para uma próxima versão, atualize a versão e envie
+a tag criada pelo gerenciador:
+
+```sh
+pnpm version patch
+git push origin main --follow-tags
+```

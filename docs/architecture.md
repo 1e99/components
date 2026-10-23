@@ -127,15 +127,25 @@ e Husky exige `pnpm lint` e `pnpm test` antes de cada commit local.
 
 ## Publicação
 
-O destino recomendado é o registro público npm, como `@1e99/components`.
-Em 2026-10-23 esse nome não retornou uma versão pública no registro. A
-publicação exigirá que a organização `@1e99` exista no npm, autenticação com
-permissão de publicação e `npm publish --access public`. O pacote publicará
-somente `dist/`, terá `react`, `react-dom` e `tailwindcss` como peer
-dependencies, além de `react-icons`, e usará `exports` para JavaScript e
-tipos.
+O destino é o registro público npm, como `@1e99/components`. O pacote publica
+somente `dist/`, `README.md` e `package.json`, declara `react`, `react-dom`,
+`tailwindcss` e `react-icons` como peer dependencies e usa `exports` para
+JavaScript e tipos.
+
+O workflow `CI` é executado em pull requests e pushes para `main`; ele valida
+lint, tipos, testes, build, Storybook e o conteúdo publicável. O workflow
+`Publish package` é acionado apenas por tags `v*`, exige que a tag seja igual a
+`v${package.json.version}` e só então executa `npm publish`.
+
+O primeiro release usa o secret temporário `NPM_TOKEN`, um token granular de
+curta duração com bypass de 2FA e permissão de publicação limitada a `@1e99`.
+Depois que `@1e99/components` existir no npm, o mantenedor configura Trusted
+Publisher para GitHub Actions com organização `1e99`, repositório `components`
+e workflow `publish.yml`, permitindo `npm publish`. Então o secret é removido
+do GitHub e o token é revogado; as próximas releases usam OIDC com
+`id-token: write` e não mantêm uma credencial npm duradoura.
 
 GitHub Packages permanece alternativa privada, mas exigiria configuração de
 registro e token em todos os consumidores; npm público é mais simples para os
-dois aplicativos atuais. Este escopo prepara o pacote e documenta o processo,
-mas não publica nada nem altera os consumidores.
+dois aplicativos atuais. Este escopo automatiza validação e publicação, mas
+não cria tags, envia commits nem publica versões por conta própria.
