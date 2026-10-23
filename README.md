@@ -140,6 +140,7 @@ SweetAlert nem de outro gerenciador de modal.
 ```sh
 pnpm lint
 pnpm lint:fix
+pnpm format
 pnpm storybook
 pnpm test
 pnpm test:stories
@@ -149,9 +150,9 @@ pnpm pack:check
 ```
 
 `pnpm lint` aplica o padrão Google para TypeScript e React; `pnpm lint:fix`
-corrige automaticamente o que for seguro. O Husky executa `pnpm lint` e
-`pnpm test` antes de cada commit local, portanto ambos devem passar antes de
-o histórico ser criado.
+corrige automaticamente o que for seguro, e `pnpm format` é seu atalho. O
+Husky executa `pnpm lint` e `pnpm test` antes de cada commit local, portanto
+ambos devem passar antes de o histórico ser criado.
 
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
 exibem os perfis fiéis dos dois aplicativos e as duas variantes de
