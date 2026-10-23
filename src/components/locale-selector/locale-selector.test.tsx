@@ -1,19 +1,22 @@
 import {fireEvent, render, screen} from '@testing-library/react';
 import {useState} from 'react';
-import {describe, expect, it} from 'vitest';
+import {describe, expect, it, vi} from 'vitest';
 import {LocaleSelector} from './locale-selector';
 
 const options = [
-  {href: '/pt', label: 'Português', languageTag: 'pt-BR', value: 'pt'},
-  {href: '/en', label: 'English', languageTag: 'en', value: 'en'},
-  {href: '/es', label: 'Español', languageTag: 'es', value: 'es'},
+  {label: 'Português', languageTag: 'pt-BR', value: 'pt'},
+  {label: 'English', languageTag: 'en', value: 'en'},
+  {label: 'Español', languageTag: 'es', value: 'es'},
 ] as const;
 
 describe('LocaleSelector', () => {
-  it('renders localized navigation links and closes after choosing one', () => {
+  it('requests a navigation locale change without redirecting', () => {
+    const onValueChange = vi.fn();
+
     render(
         <LocaleSelector
           label="Idioma"
+          onValueChange={onValueChange}
           options={options}
           triggerAriaLabel="Idioma: Português"
           value="pt"
@@ -25,17 +28,55 @@ describe('LocaleSelector', () => {
     const disclosure = trigger.parentElement;
 
     expect(trigger.querySelector('svg')).toHaveAttribute('viewBox', '0 0 24 24');
-    expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('aria-current', 'page');
-    expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('href', '/pt');
-    expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('lang', 'pt-BR');
+    expect(trigger).toHaveClass('select-none');
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+
+    const portugueseButton = screen.getByRole('button', {name: 'Português'});
+    const englishButton = screen.getByRole('button', {name: 'English'});
+
+    expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
+    expect(englishButton).toHaveAttribute('aria-pressed', 'false');
+    expect(englishButton).toHaveClass('select-none');
 
     fireEvent.click(trigger);
     expect(disclosure).toHaveAttribute('open');
 
-    const englishLink = screen.getByRole('link', {name: 'English'});
-    englishLink.addEventListener('click', (event) => event.preventDefault());
-    fireEvent.click(englishLink);
+    fireEvent.click(englishButton);
+
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenCalledWith('en');
+    expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
+    expect(englishButton).toHaveAttribute('aria-pressed', 'false');
     expect(disclosure).not.toHaveAttribute('open');
+  });
+
+  it('renders the navigation selection supplied by a controlled consumer', () => {
+    function NavigationLanguageExample() {
+      const [value, setValue] = useState('pt');
+
+      return (
+        <>
+          <output>{value}</output>
+          <LocaleSelector
+            label="Idioma"
+            onValueChange={setValue}
+            options={options}
+            triggerAriaLabel={`Idioma: ${value === 'pt' ? 'Português' : 'English'}`}
+            value={value}
+            variant="navigation"
+          />
+        </>
+      );
+    }
+
+    render(<NavigationLanguageExample />);
+
+    fireEvent.click(screen.getByLabelText('Idioma: Português'));
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    expect(screen.getByRole('status')).toHaveTextContent('en');
+    expect(screen.getByLabelText('Idioma: English')).toBeVisible();
+    expect(screen.getByRole('button', {name: 'English'})).toHaveAttribute('aria-pressed', 'true');
   });
 
   it.each([
@@ -47,6 +88,7 @@ describe('LocaleSelector', () => {
         <LocaleSelector
           density={density}
           label="Idioma"
+          onValueChange={() => undefined}
           options={options}
           value="pt"
           variant="navigation"
@@ -84,8 +126,10 @@ describe('LocaleSelector', () => {
     const disclosure = trigger.parentElement;
 
     expect(trigger.querySelector('svg')).toHaveAttribute('viewBox', '0 0 24 24');
+    expect(trigger).toHaveClass('select-none');
     expect(disclosure).toHaveClass('document-locale-disclosure');
     expect(screen.getByRole('list', {name: 'Idioma do currículo'})).toHaveClass('fixed', 'z-60');
+    expect(screen.getByRole('button', {name: 'Português'})).toHaveClass('select-none');
     expect(screen.getByRole('button', {name: 'Português'})).toHaveAttribute('aria-pressed', 'true');
 
     fireEvent.click(trigger);

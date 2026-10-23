@@ -7,9 +7,7 @@ export type LocaleSelectorOption = {
   value: string;
 };
 
-export type LocaleSelectorNavigationOption = LocaleSelectorOption & {
-  href: string;
-};
+export type LocaleSelectorNavigationOption = LocaleSelectorOption;
 
 export type LocaleSelectorDensity = 'compact' | 'compact-mobile' | 'standard';
 
@@ -21,6 +19,7 @@ type LocaleSelectorBaseProps = {
 
 export type LocaleSelectorNavigationProps = LocaleSelectorBaseProps & {
   density?: LocaleSelectorDensity;
+  onValueChange: (value: string) => void;
   options: readonly LocaleSelectorNavigationOption[];
   variant: 'navigation';
   whiteSurface?: boolean;
@@ -37,10 +36,14 @@ export type LocaleSelectorProps =
   | LocaleSelectorDocumentProps;
 
 const standardTriggerClassName =
-  'flex w-full cursor-pointer list-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden';
+  'flex w-full cursor-pointer list-none select-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden';
 
 const optionClassName =
-  'flex min-h-12 w-full items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
+  'flex min-h-12 w-full select-none items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
+
+function closeLocaleDisclosure(element: HTMLElement) {
+  element.closest('details')?.removeAttribute('open');
+}
 
 function getNavigationLayout(density: LocaleSelectorDensity) {
   if (density === 'compact') {
@@ -74,6 +77,7 @@ function LocaleTrigger({densityClassName, option, triggerAriaLabel, value}: {
 function NavigationLocaleSelector({
   density = 'standard',
   label,
+  onValueChange,
   options,
   triggerAriaLabel = label,
   value,
@@ -100,16 +104,18 @@ function NavigationLocaleSelector({
 
           return (
             <li key={option.value}>
-              <a
-                aria-current={isSelected ? 'page' : undefined}
-                className={`${optionClassName} aria-current:bg-brand-cloud aria-current:text-content-primary`}
-                href={option.href}
-                hrefLang={option.languageTag}
+              <button
+                aria-pressed={isSelected}
+                className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
                 lang={option.languageTag}
-                onClick={(event) => event.currentTarget.closest('details')?.removeAttribute('open')}
+                onClick={(event) => {
+                  onValueChange(option.value);
+                  closeLocaleDisclosure(event.currentTarget);
+                }}
+                type="button"
               >
                 {option.label}
-              </a>
+              </button>
             </li>
           );
         })}
@@ -194,7 +200,7 @@ function DocumentLocaleSelector({
                 lang={option.languageTag}
                 onClick={(event) => {
                   onValueChange(option.value);
-                  event.currentTarget.closest('details')?.removeAttribute('open');
+                  closeLocaleDisclosure(event.currentTarget);
                 }}
                 type="button"
               >

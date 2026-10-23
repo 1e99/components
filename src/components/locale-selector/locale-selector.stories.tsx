@@ -3,10 +3,29 @@ import {useState} from 'react';
 import {LocaleSelector} from './locale-selector';
 
 const options = [
-  {href: '/pt', label: 'Português', languageTag: 'pt-BR', value: 'pt'},
-  {href: '/en', label: 'English', languageTag: 'en', value: 'en'},
-  {href: '/es', label: 'Español', languageTag: 'es', value: 'es'},
+  {label: 'Português', languageTag: 'pt-BR', value: 'pt'},
+  {label: 'English', languageTag: 'en', value: 'en'},
+  {label: 'Español', languageTag: 'es', value: 'es'},
 ] as const;
+
+function NavigationLanguagePreview() {
+  const [value, setValue] = useState('pt');
+  const selectedLabel =
+    options.find((option) => option.value === value)?.label ?? value;
+
+  return (
+    <div className="w-80">
+      <LocaleSelector
+        label="Idioma"
+        onValueChange={setValue}
+        options={options}
+        triggerAriaLabel={`Idioma: ${selectedLabel}`}
+        value={value}
+        variant="navigation"
+      />
+    </div>
+  );
+}
 
 function DocumentLanguagePreview() {
   const [value, setValue] = useState('pt');
@@ -46,15 +65,12 @@ type Story = StoryObj<typeof meta>;
 export const NavbarLanguage: Story = {
   args: {
     label: 'Idioma',
+    onValueChange: () => undefined,
     options,
     value: 'pt',
     variant: 'navigation',
   },
-  render: () => (
-    <div className="w-80">
-      <LocaleSelector label="Idioma" options={options} value="pt" variant="navigation" />
-    </div>
-  ),
+  render: () => <NavigationLanguagePreview />,
 };
 
 export const DocumentLanguage: Story = {

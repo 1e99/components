@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
+import {useState} from 'react';
 import {LuExternalLink} from 'react-icons/lu';
 import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
 import {LocaleSelector, type LocaleSelectorDensity} from '../locale-selector/locale-selector';
@@ -23,9 +24,9 @@ function BrandLogoPreview() {
 }
 
 const localeOptions = [
-  {href: '/pt', label: 'Português', languageTag: 'pt-BR', value: 'pt'},
-  {href: '/en', label: 'English', languageTag: 'en', value: 'en'},
-  {href: '/es', label: 'Español', languageTag: 'es', value: 'es'},
+  {label: 'Português', languageTag: 'pt-BR', value: 'pt'},
+  {label: 'English', languageTag: 'en', value: 'en'},
+  {label: 'Español', languageTag: 'es', value: 'es'},
 ] as const;
 
 function LocalePreview({
@@ -35,13 +36,16 @@ function LocalePreview({
   density?: LocaleSelectorDensity;
   triggerAriaLabel?: string;
 }) {
+  const [value, setValue] = useState('pt');
+
   return (
     <LocaleSelector
       density={density}
       label="Idioma"
+      onValueChange={setValue}
       options={localeOptions}
       triggerAriaLabel={triggerAriaLabel}
-      value="pt"
+      value={value}
       variant="navigation"
     />
   );
