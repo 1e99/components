@@ -48,10 +48,16 @@ import {
 } from "@1e99/components";
 
 const localeOptions = [
-  { value: "pt", label: "Português", languageTag: "pt-BR", href: "/pt" },
-  { value: "en", label: "English", languageTag: "en", href: "/en" },
-  { value: "es", label: "Español", languageTag: "es", href: "/es" },
+  { value: "pt", label: "Português", languageTag: "pt-BR" },
+  { value: "en", label: "English", languageTag: "en" },
+  { value: "es", label: "Español", languageTag: "es" },
 ];
+
+const locale = "pt";
+
+function handleLocaleChange(nextLocale: string) {
+  // O aplicativo decide se atualiza estado, rota ou preferência persistida.
+}
 
 <Navbar
   brand={<a href="/"><BrandLogo /></a>}
@@ -65,7 +71,13 @@ const localeOptions = [
   )}
   actions={
     <div className="hidden items-center gap-3 md:flex">
-      <LocaleSelector label="Idioma" options={localeOptions} value="pt" variant="navigation" />
+      <LocaleSelector
+        label="Idioma"
+        onValueChange={handleLocaleChange}
+        options={localeOptions}
+        value={locale}
+        variant="navigation"
+      />
       <GoogleSignInButton label={t("signInWithGoogle")} onClick={startGoogleLogin} />
     </div>
   }
@@ -106,15 +118,17 @@ variante nem `className`; autenticação e estado de carregamento são do
 consumidor.
 
 `LocaleSelector` recebe os rótulos e códigos de idioma já traduzidos pelo
-consumidor. Sua variante `navigation` recebe opções com `href`, expõe o idioma
-ativo com `aria-current="page"` e aceita `density` `standard` (padrão),
-`compact` ou `compact-mobile`, além de `whiteSurface` para o editor do
-currículo. `triggerAriaLabel` permite conservar o rótulo acessível próprio de
-cada aplicativo.
+consumidor. As duas variantes são controladas por `value` e `onValueChange`:
+o componente chama o callback, fecha o disclosure e não presume navegação. O
+aplicativo decide se a troca atualiza estado, rota ou uma preferência
+persistida. A variante `navigation` apresenta botões com `aria-pressed` e
+aceita `density` `standard` (padrão), `compact` ou `compact-mobile`, além de
+`whiteSurface` para o editor do currículo. `triggerAriaLabel` permite
+conservar o rótulo acessível próprio de cada aplicativo.
 
-Para o diálogo de PDF, use `variant="document"`, sem `href`, com estado
-controlado e `onValueChange`. Ela apresenta botões com `aria-pressed`, fecha
-o disclosure após a escolha e posiciona o menu de modo fixo igual ao currículo:
+Para o diálogo de PDF, use `variant="document"`. Ela também apresenta botões
+com `aria-pressed`, fecha o disclosure após a escolha e posiciona o menu de
+modo fixo igual ao currículo:
 
 ```tsx
 <LocaleSelector

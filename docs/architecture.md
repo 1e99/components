@@ -86,15 +86,19 @@ que parecem iguais visualmente:
 
 | Variante | Itens | Uso | Estado ativo |
 | --- | --- | --- | --- |
-| `navigation` | links com `href` | navbar e páginas legais | `aria-current="page"` |
+| `navigation` | botões controlados | navbar e páginas legais | `aria-pressed` |
 | `document` | botões controlados | diálogo de geração do currículo | `aria-pressed` |
 
-A variante de navegação preserva as densidades reais do currículo:
-`standard`, `compact` e `compact-mobile`; `whiteSurface` cobre o header branco
-do editor. A variante de documento usa menu fixo, alinhado ao gatilho, para
-reproduzir o diálogo de PDF. Ela não importa nem controla SweetAlert: um
-consumidor que use uma camada de modal específica decide onde montar o
-componente.
+As duas variantes são controladas por `value` e `onValueChange`. Escolher um
+idioma fecha o disclosure e informa o novo valor, mas não muda a aplicação por
+conta própria; o consumidor decide se deve atualizar estado, rotear ou gravar
+uma preferência. A variante de navegação preserva as densidades reais do
+currículo: `standard`, `compact` e `compact-mobile`; `whiteSurface` cobre o
+header branco do editor. A variante de documento usa menu fixo, alinhado ao
+gatilho, para reproduzir o diálogo de PDF. Ela não importa nem controla
+SweetAlert: um consumidor que use uma camada de modal específica decide onde
+montar o componente. Gatilhos e opções usam `select-none` para evitar seleção
+acidental de texto durante a interação.
 
 ## Tailwind
 
