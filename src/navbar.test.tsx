@@ -61,4 +61,47 @@ describe("Navbar", () => {
     );
     expect(screen.getByRole("button", { name: "Sign in" })).toBeInTheDocument();
   });
+
+  it("renders a mobile disclosure with its own navigation and actions", () => {
+    render(
+      <Navbar
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        menuLabel="Open navigation menu"
+        mobileActions={<button type="button">Mobile sign in</button>}
+        mobileNavigation="disclosure"
+        mobileNavigationLabel="Mobile primary navigation"
+        navigationLabel="Primary navigation"
+      />,
+    );
+
+    expect(screen.getByText("Open navigation menu")).toBeInTheDocument();
+
+    const mobileNavigation = screen.getByRole("navigation", {
+      name: "Mobile primary navigation",
+    });
+    expect(within(mobileNavigation).getByRole("link", { name: "Apps" })).toHaveAttribute(
+      "href",
+      "/apps",
+    );
+    expect(screen.getByRole("button", { name: "Mobile sign in" })).toBeInTheDocument();
+  });
+
+  it("applies the wide and underlined variants without rendering mobile navigation by default", () => {
+    render(
+      <Navbar
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        linkTreatment="underlined"
+        navigationLabel="Primary navigation"
+        width="wide"
+      />,
+    );
+
+    expect(screen.getByRole("banner").firstElementChild).toHaveClass("max-w-7xl");
+    expect(screen.getByRole("link", { name: "Apps" })).toHaveClass("after:scale-x-0");
+    expect(
+      screen.queryByRole("navigation", { name: "Mobile primary navigation" }),
+    ).not.toBeInTheDocument();
+  });
 });
