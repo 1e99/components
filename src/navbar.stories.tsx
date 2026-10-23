@@ -50,7 +50,7 @@ function DomainActions() {
   return (
     <div className="hidden items-center gap-3 md:flex">
       <LocalePreview />
-      <GoogleSignInButton />
+      <GoogleSignInButton label="Entrar com Google" />
     </div>
   );
 }
@@ -80,7 +80,9 @@ function CurriculumActions() {
           />
         </svg>
       </a>
-      <GoogleSignInButton />
+      <div className="w-52 shrink-0">
+        <GoogleSignInButton label="Entrar com Google" />
+      </div>
     </div>
   );
 }
@@ -95,7 +97,7 @@ function renderDomain(args: NavbarProps) {
         actions: (
           <>
             <LocalePreview />
-            <GoogleSignInButton />
+            <GoogleSignInButton label="Entrar com Google" />
           </>
         ),
         menuLabel: "Abrir menu de navegação",

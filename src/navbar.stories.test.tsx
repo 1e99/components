@@ -52,7 +52,10 @@ describe("Navbar stories", () => {
     );
 
     expect(screen.getByLabelText("Idioma: Português").tagName).toBe("SUMMARY");
-    expect(screen.getByRole("button", { name: "Entrar com Google" })).toHaveClass(
+    const googleButton = screen.getByRole("button", { name: "Entrar com Google" });
+
+    expect(googleButton.parentElement).toHaveClass("w-52", "shrink-0");
+    expect(googleButton).toHaveClass(
       "bg-surface-raised",
       "font-semibold",
     );
