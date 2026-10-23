@@ -174,11 +174,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
 
-export const DomainWebsite: Story = {
+export const ElevatedNavigation: Story = {
   args: {
     items: [
-      {href: '/#aplicativos', label: 'Aplicativos'},
-      {href: '/sobre', label: 'Sobre a 1e99'},
+      {href: '/#products', label: 'Produtos'},
+      {href: '/about', label: 'Sobre'},
     ],
     layer: 'above',
     linkTreatment: 'underlined',
@@ -187,7 +187,7 @@ export const DomainWebsite: Story = {
   },
 };
 
-export const Curriculo: Story = {
+export const WideNavigation: Story = {
   args: {
     items: [
       {href: '#modelos', label: 'Modelos'},
@@ -196,7 +196,7 @@ export const Curriculo: Story = {
     ],
     linkTreatment: 'plain',
     linkWeight: 'bold',
-    navigationLabel: 'Página inicial do 1e99 Currículo',
+    navigationLabel: 'Navegação de página',
     width: 'wide',
   },
 };

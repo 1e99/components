@@ -5,8 +5,8 @@ import {NavbarPlayground, type NavbarPlaygroundArgs} from './navbar.stories';
 const defaultArgs: NavbarPlaygroundArgs = {
   googleSignInLabel: 'Entrar com Google',
   items: [
-    {href: '/#aplicativos', label: 'Aplicativos'},
-    {href: '/sobre', label: 'Sobre a 1e99'},
+    {href: '/#products', label: 'Produtos'},
+    {href: '/about', label: 'Sobre'},
   ],
   mobileMenuLabel: 'Abrir menu de navegação',
   mobileNavigationLabel: 'Navegação principal móvel',

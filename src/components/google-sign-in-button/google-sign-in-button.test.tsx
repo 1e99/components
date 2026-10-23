@@ -3,7 +3,7 @@ import {describe, expect, it} from 'vitest';
 import {GoogleSignInButton} from './google-sign-in-button';
 
 describe('GoogleSignInButton', () => {
-  it('preserves the domain website\'s Google sign-in treatment', () => {
+  it('preserves the standard Google sign-in treatment', () => {
     const {container} = render(<GoogleSignInButton label="Entrar com Google" />);
 
     const button = screen.getByRole('button', {name: 'Entrar com Google'});

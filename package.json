@@ -1,7 +1,7 @@
 {
   "name": "@1e99/components",
   "version": "0.1.0",
-  "description": "Shared React components for 1e99 applications.",
+  "description": "Reusable React components built with Tailwind CSS.",
   "repository": {
     "type": "git",
     "url": "https://github.com/1e99/components.git"
