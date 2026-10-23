@@ -105,12 +105,12 @@ da folha CSS no aplicativo consumidor.
 ## Visualização e qualidade
 
 Storybook React/Vite exibe os perfis visuais fiéis dos dois headers e stories
-próprias do seletor de idioma da navbar e do diálogo de PDF, com o SVG oficial
-de logo apenas em `.storybook/public`, viewport móvel para o disclosure e os
-tokens reais de superfície, sombra e tipografia. Vitest e Testing Library
-cobrem semântica, layout de regiões irmãs, variantes, menu móvel e os estados
-ativos dos controles. Storybook também tem os addons Vitest e accessibility
-para tornar as stories pontos de partida de teste visual e de interação.
+próprias do seletor de idioma controlado, com o SVG oficial de logo apenas em
+`.storybook/public`, viewport móvel para o disclosure e os tokens reais de
+superfície, sombra e tipografia. Vitest e Testing Library cobrem semântica,
+layout de regiões irmãs, densidades, menu móvel e os estados ativos dos
+controles. Storybook também tem os addons Vitest e accessibility para tornar
+as stories pontos de partida de teste visual e de interação.
 
 ESLint 9 usa `eslint-config-google` junto das regras TypeScript e React.
 `pnpm lint` verifica o padrão, `pnpm lint:fix` aplica as correções automáticas

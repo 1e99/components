@@ -1,5 +1,9 @@
 # Seletor de idioma controlado
 
+> **Histórico — superado em 2026-10-23.** O pacote deixou de oferecer a
+> variante `document`; consulte `README.md` e `docs/architecture.md` para a
+> API atual de um único seletor controlado.
+
 ## Intenção
 
 `LocaleSelector` não deve decidir como uma troca de idioma altera a aplicação.

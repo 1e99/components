@@ -1,5 +1,9 @@
 # Controles compartilhados da navbar
 
+> **Histórico — superado em 2026-10-23.** A variante `document` e sua story
+> foram removidas do pacote; consulte `README.md` e `docs/architecture.md`
+> para o único `LocaleSelector` controlado atual.
+
 ## Intenção
 
 Além da `Navbar`, o pacote passa a oferecer os dois controles recorrentes

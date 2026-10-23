@@ -1,5 +1,9 @@
 # Controlled Locale Selector Implementation Plan
 
+> **Histórico — superado em 2026-10-23.** O pacote deixou de oferecer a
+> variante `document`; consulte `README.md` e `docs/architecture.md` para a
+> API atual de um único seletor controlado.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Tornar as duas variantes de `LocaleSelector` controladas pelo

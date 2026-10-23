@@ -1,5 +1,9 @@
 # Shared Navbar Controls Implementation Plan
 
+> **Histórico — superado em 2026-10-23.** A variante `document` e sua story
+> foram removidas do pacote; consulte `README.md` e `docs/architecture.md`
+> para o único `LocaleSelector` controlado atual.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Expor botão Google e seletor de idioma fiéis aos aplicativos 1e99, sem dependências de framework ou regras de produto.

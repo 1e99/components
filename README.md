@@ -146,10 +146,10 @@ Husky executa `pnpm lint` e `pnpm test` antes de cada commit local, portanto
 ambos devem passar antes de o histórico ser criado.
 
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
-exibem os perfis fiéis dos dois aplicativos e as duas variantes de
-`LocaleSelector`, incluindo o SVG oficial somente como asset de demonstração
-do Storybook. Elas são verificadas em Chromium por `pnpm test:stories`, com
-os addons oficiais de acessibilidade e Vitest.
+exibem os perfis fiéis dos dois aplicativos e o seletor de idioma controlado,
+incluindo o SVG oficial somente como asset de demonstração do Storybook. Elas
+são verificadas em Chromium por `pnpm test:stories`, com os addons oficiais de
+acessibilidade e Vitest.
 
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes
 do teste de stories:
