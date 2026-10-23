@@ -211,51 +211,26 @@ repete essas verificações e publica somente quando uma tag `vX.Y.Z` correspond
 exatamente à versão em `package.json` e aponta para um commit ancestral de
 `main`. Os actions usados nos workflows estão fixados em commits revisáveis.
 
-### Primeiro release pelo CI
+### Trusted Publishing
 
-O bootstrap usa temporariamente o secret de repositório `NPM_TOKEN`. Crie-o no
-npm como token granular, com **Bypass two-factor authentication**, permissão
-**Read and write (publish and stage)** limitada ao escopo `@1e99` e expiração
-curta. Salve-o em GitHub → `1e99/components` → Settings → Secrets and variables
-→ Actions como `NPM_TOKEN`. Nunca grave ou compartilhe esse valor por chat,
-issues, commits ou logs.
+O pacote usa Trusted Publishing do npm com OIDC. Em **Trusted Publisher** do
+`@1e99/components`, a configuração precisa apontar para GitHub Actions, com
+organização `1e99`, repositório `components` e arquivo `publish.yml`. O job de
+publicação recebe `id-token: write` e não lê token npm algum; o npm troca a
+identidade efêmera do GitHub Actions pela autorização de publicação.
 
-Como `@1e99/components` ainda não existe antes do primeiro publish, o escopo
-inteiro é uma exceção temporária de bootstrap: revogue o token assim que OIDC
-for configurado. O npm anuncia a remoção do publish direto com tokens granular
-de bypass de 2FA em janeiro de 2027; se o primeiro release for adiado além
-disso, use o fluxo de staged publishing do npm em vez de manter um token.
-
-Antes de criar a tag pública, confirme a política de licença: o pacote está
-como `UNLICENSED` e essa decisão precisa de aprovação explícita para publicação
-pública.
-
-Envie os commits e a tag correspondente à versão:
-
-```sh
-git push origin main
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-O workflow recusa a tag se `package.json` não estiver em `0.1.0` e publica com
-`publishConfig.access: public` se todas as verificações passarem.
-Configure também regras do GitHub para exigir o CI antes de merge em `main` e
-restringir a criação e atualização de tags `v*` a mantenedores autorizados.
-
-### Migrar para Trusted Publishing
-
-Depois que a primeira release for publicada, habilite 2FA na conta npm e abra
-as configurações de `@1e99/components` no npm. Em **Trusted Publisher**, escolha
-GitHub Actions e informe organização `1e99`, repositório `components` e arquivo
-de workflow `publish.yml`; permita publicação direta com `npm publish`.
-
-Em seguida, apague o secret `NPM_TOKEN` do GitHub e revogue o token no npm. As
-tags futuras usarão OIDC com credenciais efêmeras do GitHub Actions e gerarão
-provenance automaticamente. Para uma próxima versão, atualize a versão e envie
-a tag criada pelo gerenciador:
+Depois da próxima publicação OIDC bem-sucedida, apague o secret `NPM_TOKEN` do
+GitHub e revogue o token granular usado somente no bootstrap de `0.1.0`. Nunca
+grave ou compartilhe tokens em chat, issues, commits ou logs. Para uma próxima
+versão, atualize a versão e envie a tag criada pelo gerenciador:
 
 ```sh
 pnpm version patch
 git push origin main --follow-tags
 ```
+
+O workflow recusa a tag se ela não corresponder exatamente à versão em
+`package.json` ou se o commit não fizer parte de `main`; ele publica com
+`publishConfig.access: public` se todas as verificações passarem. Configure
+também regras do GitHub para exigir o CI antes de merge em `main` e restringir
+a criação e atualização de tags `v*` a mantenedores autorizados.

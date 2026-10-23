@@ -67,9 +67,4 @@ jobs:
         with:
           node-version: 24
           package-manager-cache: false
-      - name: Configure npm authentication for bootstrap
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        if: ${{ env.NODE_AUTH_TOKEN != '' }}
-        run: npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
       - run: npm publish "./${{ steps.package.outputs.file }}"
