@@ -159,13 +159,6 @@ exibem os perfis fiéis dos dois aplicativos e as duas variantes de
 do Storybook. Elas são verificadas em Chromium por `pnpm test:stories`, com
 os addons oficiais de acessibilidade e Vitest.
 
-## Organização do código
-
-Cada componente é uma unidade em `src/components/<nome>/`: implementação,
-testes e story (quando houver) ficam juntos. `src/index.ts` é o único ponto de
-entrada público; mudar a organização interna não altera como os aplicativos
-importam `@1e99/components`. Testes transversais ficam em `test/`.
-
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes
 do teste de stories:
 
@@ -173,6 +166,13 @@ do teste de stories:
 pnpm exec playwright install chromium
 sudo pnpm exec playwright install-deps chromium
 ```
+
+## Organização do código
+
+Cada componente é uma unidade em `src/components/<nome>/`: implementação,
+testes e story (quando houver) ficam juntos. `src/index.ts` é o único ponto de
+entrada público; mudar a organização interna não altera como os aplicativos
+importam `@1e99/components`. Testes transversais ficam em `test/`.
 
 ## Publicação
 
