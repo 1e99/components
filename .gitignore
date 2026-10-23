@@ -1,5 +1,7 @@
 node_modules/
 .eslintcache
+.superpowers/
+docs/superpowers/
 .husky/_/
 dist/
 storybook-static/

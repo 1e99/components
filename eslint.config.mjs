@@ -9,7 +9,6 @@ export default [
   {
     ignores: [
       '.husky/_/**',
-      '.superpowers/**',
       'coverage/**',
       'dist/**',
       'node_modules/**',
