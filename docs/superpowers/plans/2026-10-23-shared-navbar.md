@@ -54,7 +54,8 @@ Vitest, Testing Library, tsup, pnpm.
   tsup.
 - [ ] Configure build, typecheck, test, Storybook, static Storybook and pack
   verification scripts.
-- [ ] Verify the empty package builds, typechecks and starts Storybook.
+- [ ] Verify the empty package builds and typechecks; Storybook starts after
+  its configuration is added in Task 3.
 - [ ] Commit the standalone toolchain.
 
 ### Task 2: Define the navbar contract with tests first
