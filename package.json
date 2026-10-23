@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/1e99/components.git"
   },
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.js",

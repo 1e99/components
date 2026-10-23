@@ -125,7 +125,6 @@ ficam em `test/`.
 
 ## Licença
 
-Este pacote usa a [1e99 Components Use License](LICENSE). Você pode usar,
-integrar e redistribuir cópias inalteradas, inclusive em aplicações comerciais.
-Não é permitido modificar o pacote, criar derivados ou distribuir versões
-alteradas. Esta não é uma licença open source.
+Este pacote é licenciado sob a [MIT License](LICENSE). Você pode usar, copiar,
+modificar, distribuir e sublicenciar o software, inclusive comercialmente,
+desde que preserve o aviso de copyright e a licença.
