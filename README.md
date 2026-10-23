@@ -64,7 +64,7 @@ const localeOptions = [
   actions={
     <div className="hidden items-center gap-3 md:flex">
       <LocaleSelector label="Idioma" options={localeOptions} value="pt" variant="navigation" />
-      <GoogleSignInButton onClick={startGoogleLogin} />
+      <GoogleSignInButton label={t("signInWithGoogle")} onClick={startGoogleLogin} />
     </div>
   }
   width="content"
