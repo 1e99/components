@@ -4,13 +4,16 @@
 
 @theme inline {
   --color-brand-cloud: #f3f8fa;
+  --color-brand-navy: #071d35;
   --color-action-primary: #0e5784;
+  --color-action-primary-hover: #071d35;
   --color-border-subtle: color-mix(in srgb, #071d35 14%, transparent);
   --color-content-inverse: #f8fcff;
   --color-content-primary: #071d35;
   --color-content-secondary: #526477;
   --color-surface-page: #f3f8fa;
   --color-surface-raised: #f8fcff;
+  --color-surface-subtle: color-mix(in srgb, #071d35 5%, #f8fcff);
   --text-label: 0.75rem;
   --radius-card: 0px;
   --radius-control: 0px;
