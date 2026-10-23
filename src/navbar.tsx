@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import {Fragment, type ReactNode} from 'react';
 
 export type NavbarItem = {
   href: string;
@@ -11,10 +11,10 @@ export type NavbarLinkRenderer = (props: {
   href: string;
 }) => ReactNode;
 
-export type NavbarWidth = "content" | "wide";
-export type NavbarLinkTreatment = "plain" | "underlined";
-export type NavbarLinkWeight = "bold" | "semibold";
-export type NavbarLayer = "above" | "standard";
+export type NavbarWidth = 'content' | 'wide';
+export type NavbarLinkTreatment = 'plain' | 'underlined';
+export type NavbarLinkWeight = 'bold' | 'semibold';
+export type NavbarLayer = 'above' | 'standard';
 export type NavbarMobileNavigation = {
   actions?: ReactNode;
   menuLabel: string;
@@ -35,35 +35,35 @@ export type NavbarProps = {
 };
 
 const baseLinkClassName =
-  "text-label text-content-secondary transition-colors duration-200 ease-brand hover:text-content-primary focus-visible:rounded-control focus-visible:outline-none focus-visible:shadow-focus";
+  'text-label text-content-secondary transition-colors duration-200 ease-brand hover:text-content-primary focus-visible:rounded-control focus-visible:outline-none focus-visible:shadow-focus';
 
 const underlinedLinkClassName =
-  "relative after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-action-primary after:transition-transform after:duration-200 after:ease-brand hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  'relative after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-action-primary after:transition-transform after:duration-200 after:ease-brand hover:after:scale-x-100 focus-visible:after:scale-x-100';
 
 const mobileLinkClassName =
-  "flex min-h-12 items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus";
+  'flex min-h-12 items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
 
 export function Navbar({
   actions,
   brand,
   items,
-  layer = "standard",
-  linkTreatment = "plain",
-  linkWeight = "semibold",
+  layer = 'standard',
+  linkTreatment = 'plain',
+  linkWeight = 'semibold',
   mobileNavigation,
   navigationLabel,
   renderLink,
-  width = "content",
+  width = 'content',
 }: NavbarProps) {
   const linkClassName = [
     baseLinkClassName,
-    linkWeight === "bold" ? "font-bold" : "font-semibold",
-    linkTreatment === "underlined" ? underlinedLinkClassName : "",
+    linkWeight === 'bold' ? 'font-bold' : 'font-semibold',
+    linkTreatment === 'underlined' ? underlinedLinkClassName : '',
   ]
-    .filter(Boolean)
-    .join(" ");
-  const containerWidthClassName = width === "wide" ? "max-w-7xl" : "max-w-5xl";
-  const layerClassName = layer === "above" ? "z-50" : "z-40";
+      .filter(Boolean)
+      .join(' ');
+  const containerWidthClassName = width === 'wide' ? 'max-w-7xl' : 'max-w-5xl';
+  const layerClassName = layer === 'above' ? 'z-50' : 'z-40';
   const renderLinks = (className: string) =>
     items.map((item) => (
       <Fragment key={item.href}>

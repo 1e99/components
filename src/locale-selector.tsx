@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, type ReactNode } from "react";
+import {useCallback, useEffect, useRef, type ReactNode} from 'react';
 
 export type LocaleSelectorOption = {
   label: ReactNode;
@@ -10,7 +10,7 @@ export type LocaleSelectorNavigationOption = LocaleSelectorOption & {
   href: string;
 };
 
-export type LocaleSelectorDensity = "compact" | "compact-mobile" | "standard";
+export type LocaleSelectorDensity = 'compact' | 'compact-mobile' | 'standard';
 
 type LocaleSelectorBaseProps = {
   label: string;
@@ -21,37 +21,39 @@ type LocaleSelectorBaseProps = {
 export type LocaleSelectorNavigationProps = LocaleSelectorBaseProps & {
   density?: LocaleSelectorDensity;
   options: readonly LocaleSelectorNavigationOption[];
-  variant: "navigation";
+  variant: 'navigation';
   whiteSurface?: boolean;
 };
 
 export type LocaleSelectorDocumentProps = LocaleSelectorBaseProps & {
   onValueChange: (value: string) => void;
   options: readonly LocaleSelectorOption[];
-  variant: "document";
+  variant: 'document';
 };
 
-export type LocaleSelectorProps = LocaleSelectorNavigationProps | LocaleSelectorDocumentProps;
+export type LocaleSelectorProps =
+  | LocaleSelectorNavigationProps
+  | LocaleSelectorDocumentProps;
 
 const standardTriggerClassName =
-  "flex w-full cursor-pointer list-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden";
+  'flex w-full cursor-pointer list-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden';
 
 const optionClassName =
-  "flex min-h-12 w-full items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus";
+  'flex min-h-12 w-full items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
 
 function getNavigationLayout(density: LocaleSelectorDensity) {
-  if (density === "compact") {
-    return { trigger: "h-12 gap-2", wrapper: "w-auto" };
+  if (density === 'compact') {
+    return {trigger: 'h-12 gap-2', wrapper: 'w-auto'};
   }
 
-  if (density === "compact-mobile") {
-    return { trigger: "h-12 gap-2 px-3 md:gap-4 md:px-4 md:min-w-32", wrapper: "w-auto" };
+  if (density === 'compact-mobile') {
+    return {trigger: 'h-12 gap-2 px-3 md:gap-4 md:px-4 md:min-w-32', wrapper: 'w-auto'};
   }
 
-  return { trigger: "min-h-12 gap-4 px-4 md:min-w-32", wrapper: "w-full md:w-auto" };
+  return {trigger: 'min-h-12 gap-4 px-4 md:min-w-32', wrapper: 'w-full md:w-auto'};
 }
 
-function LocaleTrigger({ densityClassName, option, triggerAriaLabel, value }: {
+function LocaleTrigger({densityClassName, option, triggerAriaLabel, value}: {
   densityClassName: string;
   option?: LocaleSelectorOption;
   triggerAriaLabel: string;
@@ -75,7 +77,7 @@ function LocaleTrigger({ densityClassName, option, triggerAriaLabel, value }: {
 }
 
 function NavigationLocaleSelector({
-  density = "standard",
+  density = 'standard',
   label,
   options,
   triggerAriaLabel = label,
@@ -84,7 +86,7 @@ function NavigationLocaleSelector({
 }: LocaleSelectorNavigationProps) {
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
-  const surfaceClassName = whiteSurface ? "bg-white" : "bg-surface-raised";
+  const surfaceClassName = whiteSurface ? 'bg-white' : 'bg-surface-raised';
 
   return (
     <details className={`locale-disclosure group relative ${layout.wrapper}`}>
@@ -104,12 +106,12 @@ function NavigationLocaleSelector({
           return (
             <li key={option.value}>
               <a
-                aria-current={isSelected ? "page" : undefined}
+                aria-current={isSelected ? 'page' : undefined}
                 className={`${optionClassName} aria-current:bg-brand-cloud aria-current:text-content-primary`}
                 href={option.href}
                 hrefLang={option.languageTag}
                 lang={option.languageTag}
-                onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}
+                onClick={(event) => event.currentTarget.closest('details')?.removeAttribute('open')}
               >
                 {option.label}
               </a>
@@ -151,18 +153,18 @@ function DocumentLocaleSelector({
 
     const handleToggle = () => {
       if (!details.open) {
-        window.removeEventListener("resize", positionMenu);
+        window.removeEventListener('resize', positionMenu);
         return;
       }
 
       positionMenu();
-      window.addEventListener("resize", positionMenu);
+      window.addEventListener('resize', positionMenu);
     };
 
-    details.addEventListener("toggle", handleToggle);
+    details.addEventListener('toggle', handleToggle);
     return () => {
-      details.removeEventListener("toggle", handleToggle);
-      window.removeEventListener("resize", positionMenu);
+      details.removeEventListener('toggle', handleToggle);
+      window.removeEventListener('resize', positionMenu);
     };
   }, [positionMenu]);
 
@@ -173,7 +175,9 @@ function DocumentLocaleSelector({
         aria-label={triggerAriaLabel}
         className={`${standardTriggerClassName} min-h-12 gap-4 px-4`}
       >
-        <span lang={selectedOption?.languageTag}>{selectedOption?.label ?? value}</span>
+        <span lang={selectedOption?.languageTag}>
+          {selectedOption?.label ?? value}
+        </span>
         <svg
           aria-hidden="true"
           className="document-locale-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none group-open:rotate-180"
@@ -197,11 +201,11 @@ function DocumentLocaleSelector({
             <li key={option.value}>
               <button
                 aria-pressed={isSelected}
-                className={`${optionClassName} text-left ${isSelected ? "bg-brand-cloud text-content-primary" : ""}`}
+                className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
                 lang={option.languageTag}
                 onClick={(event) => {
                   onValueChange(option.value);
-                  event.currentTarget.closest("details")?.removeAttribute("open");
+                  event.currentTarget.closest('details')?.removeAttribute('open');
                 }}
                 type="button"
               >
@@ -216,7 +220,7 @@ function DocumentLocaleSelector({
 }
 
 export function LocaleSelector(props: LocaleSelectorProps) {
-  return props.variant === "navigation" ? (
+  return props.variant === 'navigation' ? (
     <NavigationLocaleSelector {...props} />
   ) : (
     <DocumentLocaleSelector {...props} />

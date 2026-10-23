@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { GoogleSignInButton } from "./google-sign-in-button";
-import { LocaleSelector, type LocaleSelectorDensity } from "./locale-selector";
-import { Navbar, type NavbarProps } from "./navbar";
+import type {Meta, StoryObj} from '@storybook/react-vite';
+import {GoogleSignInButton} from './google-sign-in-button';
+import {LocaleSelector, type LocaleSelectorDensity} from './locale-selector';
+import {Navbar, type NavbarProps} from './navbar';
 
 function BrandLogoPreview() {
   return (
@@ -22,14 +22,14 @@ function BrandLogoPreview() {
 }
 
 const localeOptions = [
-  { href: "/pt", label: "Português", languageTag: "pt-BR", value: "pt" },
-  { href: "/en", label: "English", languageTag: "en", value: "en" },
-  { href: "/es", label: "Español", languageTag: "es", value: "es" },
+  {href: '/pt', label: 'Português', languageTag: 'pt-BR', value: 'pt'},
+  {href: '/en', label: 'English', languageTag: 'en', value: 'en'},
+  {href: '/es', label: 'Español', languageTag: 'es', value: 'es'},
 ] as const;
 
 function LocalePreview({
-  density = "standard",
-  triggerAriaLabel = "Idioma",
+  density = 'standard',
+  triggerAriaLabel = 'Idioma',
 }: {
   density?: LocaleSelectorDensity;
   triggerAriaLabel?: string;
@@ -100,33 +100,39 @@ function renderDomain(args: NavbarProps) {
             <GoogleSignInButton label="Entrar com Google" />
           </>
         ),
-        menuLabel: "Abrir menu de navegação",
-        navigationLabel: "Navegação principal móvel",
+        menuLabel: 'Abrir menu de navegação',
+        navigationLabel: 'Navegação principal móvel',
       }}
     />
   );
 }
 
 function renderCurriculum(args: NavbarProps) {
-  return <Navbar {...args} actions={<CurriculumActions />} brand={<BrandLogoPreview />} />;
+  return (
+    <Navbar
+      {...args}
+      actions={<CurriculumActions />}
+      brand={<BrandLogoPreview />}
+    />
+  );
 }
 
 const meta = {
-  title: "Navigation/Navbar",
+  title: 'Navigation/Navbar',
   component: Navbar,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   args: {
     brand: <BrandLogoPreview />,
     items: [],
-    navigationLabel: "Navegação principal",
+    navigationLabel: 'Navegação principal',
   },
   argTypes: {
-    actions: { control: false },
-    brand: { control: false },
-    mobileNavigation: { control: false },
-    renderLink: { control: false },
+    actions: {control: false},
+    brand: {control: false},
+    mobileNavigation: {control: false},
+    renderLink: {control: false},
   },
   render: renderDomain,
 } satisfies Meta<typeof Navbar>;
@@ -138,29 +144,29 @@ type Story = StoryObj<typeof meta>;
 export const DomainWebsite: Story = {
   args: {
     items: [
-      { href: "/#aplicativos", label: "Aplicativos" },
-      { href: "/sobre", label: "Sobre a 1e99" },
+      {href: '/#aplicativos', label: 'Aplicativos'},
+      {href: '/sobre', label: 'Sobre a 1e99'},
     ],
-    layer: "above",
-    linkTreatment: "underlined",
-    linkWeight: "semibold",
-    navigationLabel: "Navegação principal",
-    width: "content",
+    layer: 'above',
+    linkTreatment: 'underlined',
+    linkWeight: 'semibold',
+    navigationLabel: 'Navegação principal',
+    width: 'content',
   },
 };
 
 export const Curriculo: Story = {
   args: {
     items: [
-      { href: "#modelos", label: "Modelos" },
-      { href: "#planos", label: "Preço" },
-      { href: "#duvidas", label: "Dúvidas" },
+      {href: '#modelos', label: 'Modelos'},
+      {href: '#planos', label: 'Preço'},
+      {href: '#duvidas', label: 'Dúvidas'},
     ],
-    layer: "standard",
-    linkTreatment: "plain",
-    linkWeight: "bold",
-    navigationLabel: "Página inicial do 1e99 Currículo",
-    width: "wide",
+    layer: 'standard',
+    linkTreatment: 'plain',
+    linkWeight: 'bold',
+    navigationLabel: 'Página inicial do 1e99 Currículo',
+    width: 'wide',
   },
   render: renderCurriculum,
 };

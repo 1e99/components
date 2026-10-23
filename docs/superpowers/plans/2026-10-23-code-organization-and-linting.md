@@ -28,7 +28,7 @@ Storybook.
 
 - Resolução pública: cobrir importação pelo índice após mover cada componente (Tarefa 2).
 - Ícones decorativos: cobrir `aria-hidden` e uso de ícones de `react-icons` (Tarefa 2).
-- Formatação: `pnpm lint` e `pnpm lint:fix -- --dry-run` devem terminar sem avisos (Tarefa 1).
+- Formatação: `pnpm lint` e `pnpm exec eslint . --fix-dry-run --max-warnings 0` devem terminar sem avisos (Tarefa 1).
 - Publicação: verificar que `react-icons` é peer dependency e não entra no bundle (Tarefa 1 e 3).
 - Descoberta Storybook: validar que stories movidas continuam no build (Tarefa 3).
 

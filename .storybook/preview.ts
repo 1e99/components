@@ -1,10 +1,10 @@
-import type { Preview } from "@storybook/react-vite";
-import "./preview.css";
+import type {Preview} from '@storybook/react-vite';
+import './preview.css';
 
 const preview: Preview = {
   parameters: {
     a11y: {
-      test: "error",
+      test: 'error',
     },
     controls: {
       expanded: true,

@@ -1,4 +1,6 @@
 node_modules/
+.eslintcache
+.husky/_/
 dist/
 storybook-static/
 coverage/

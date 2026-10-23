@@ -1,16 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
-import { LocaleSelector } from "./locale-selector";
+import type {Meta, StoryObj} from '@storybook/react-vite';
+import {useState} from 'react';
+import {LocaleSelector} from './locale-selector';
 
 const options = [
-  { href: "/pt", label: "Português", languageTag: "pt-BR", value: "pt" },
-  { href: "/en", label: "English", languageTag: "en", value: "en" },
-  { href: "/es", label: "Español", languageTag: "es", value: "es" },
+  {href: '/pt', label: 'Português', languageTag: 'pt-BR', value: 'pt'},
+  {href: '/en', label: 'English', languageTag: 'en', value: 'en'},
+  {href: '/es', label: 'Español', languageTag: 'es', value: 'es'},
 ] as const;
 
 function DocumentLanguagePreview() {
-  const [value, setValue] = useState("pt");
-  const selectedLabel = options.find((option) => option.value === value)?.label ?? value;
+  const [value, setValue] = useState('pt');
+  const selectedLabel =
+    options.find((option) => option.value === value)?.label ?? value;
 
   return (
     <div className="w-80 rounded-card border border-border-subtle bg-surface-page p-6 shadow-card">
@@ -31,10 +32,10 @@ function DocumentLanguagePreview() {
 }
 
 const meta = {
-  title: "Controls/LocaleSelector",
+  title: 'Controls/LocaleSelector',
   component: LocaleSelector,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
 } satisfies Meta;
 
@@ -44,10 +45,10 @@ type Story = StoryObj<typeof meta>;
 
 export const NavbarLanguage: Story = {
   args: {
-    label: "Idioma",
+    label: 'Idioma',
     options,
-    value: "pt",
-    variant: "navigation",
+    value: 'pt',
+    variant: 'navigation',
   },
   render: () => (
     <div className="w-80">
@@ -58,11 +59,11 @@ export const NavbarLanguage: Story = {
 
 export const DocumentLanguage: Story = {
   args: {
-    label: "Idioma do currículo",
+    label: 'Idioma do currículo',
     onValueChange: () => undefined,
     options,
-    value: "pt",
-    variant: "document",
+    value: 'pt',
+    variant: 'document',
   },
   render: () => <DocumentLanguagePreview />,
 };
