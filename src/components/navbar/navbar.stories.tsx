@@ -2,7 +2,7 @@ import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
 import {LuExternalLink} from 'react-icons/lu';
 import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
-import {LocaleSelector, type LocaleSelectorDensity} from '../locale-selector/locale-selector';
+import {Selector, type SelectorDensity} from '../selector/selector';
 import {Navbar, type NavbarProps} from './navbar';
 
 function BrandLogoPreview() {
@@ -33,7 +33,7 @@ function LocalePreview({
   density = 'standard',
   getTriggerAriaLabel,
 }: {
-  density?: LocaleSelectorDensity;
+  density?: SelectorDensity;
   getTriggerAriaLabel?: (selectedLabel: string) => string;
 }) {
   const [value, setValue] = useState('pt');
@@ -41,11 +41,19 @@ function LocalePreview({
     localeOptions.find((option) => option.value === value)?.label ?? value;
 
   return (
-    <LocaleSelector
+    <Selector
       density={density}
       label="Idioma"
       onValueChange={setValue}
       options={localeOptions}
+      renderOption={({option}) => (
+        <span lang={option.languageTag}>{option.label}</span>
+      )}
+      renderTrigger={({selectedOption, value: selectedValue}) => (
+        <span lang={selectedOption?.languageTag}>
+          {selectedOption?.label ?? selectedValue}
+        </span>
+      )}
       triggerAriaLabel={getTriggerAriaLabel?.(selectedLabel)}
       value={value}
     />

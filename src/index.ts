@@ -1,13 +1,13 @@
 export {GoogleSignInButton} from './components/google-sign-in-button/google-sign-in-button';
 export type {GoogleSignInButtonProps} from './components/google-sign-in-button/google-sign-in-button';
-export {LocaleSelector} from './components/locale-selector/locale-selector';
+export {Selector} from './components/selector/selector';
 export type {
-  LocaleSelectorDensity,
-  LocaleSelectorNavigationOption,
-  LocaleSelectorNavigationProps,
-  LocaleSelectorOption,
-  LocaleSelectorProps,
-} from './components/locale-selector/locale-selector';
+  SelectorDensity,
+  SelectorOption,
+  SelectorProps,
+  SelectorRenderOptionContext,
+  SelectorRenderTriggerContext,
+} from './components/selector/selector';
 export {Navbar} from './components/navbar/navbar';
 export type {
   NavbarItem,
