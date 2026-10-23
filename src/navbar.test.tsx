@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import * as components from "./index";
 import { Navbar } from "./index";
 
@@ -85,6 +86,25 @@ describe("Navbar", () => {
       "/apps",
     );
     expect(screen.getByRole("button", { name: "Mobile sign in" })).toBeInTheDocument();
+  });
+
+  it("opens the native mobile disclosure", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <Navbar
+        brand={<a href="/">1e99</a>}
+        items={[{ href: "/apps", label: "Apps" }]}
+        menuLabel="Open navigation menu"
+        mobileNavigation="disclosure"
+        navigationLabel="Primary navigation"
+      />,
+    );
+
+    const menu = screen.getByText("Open navigation menu");
+    await user.click(menu);
+
+    expect(menu.closest("details")).toHaveAttribute("open");
   });
 
   it("applies the wide and underlined variants without rendering mobile navigation by default", () => {
