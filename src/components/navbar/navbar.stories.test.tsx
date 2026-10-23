@@ -1,73 +1,104 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, within} from '@testing-library/react';
 import {describe, expect, it} from 'vitest';
-import type {NavbarProps} from './navbar';
-import navbarMeta, {Curriculo, DomainWebsite} from './navbar.stories';
+import {NavbarPlayground, type NavbarPlaygroundArgs} from './navbar.stories';
+
+const defaultArgs: NavbarPlaygroundArgs = {
+  googleSignInLabel: 'Entrar com Google',
+  items: [
+    {href: '/#aplicativos', label: 'Aplicativos'},
+    {href: '/sobre', label: 'Sobre a 1e99'},
+  ],
+  mobileMenuLabel: 'Abrir menu de navegação',
+  mobileNavigationLabel: 'Navegação principal móvel',
+  navigationLabel: 'Navegação principal',
+  selectorLabel: 'Idioma',
+  selectorOptions: [
+    {label: 'Português', value: 'pt'},
+    {label: 'English', value: 'en'},
+  ],
+  showGoogleSignIn: true,
+  showMobileNavigation: true,
+  showSelector: true,
+};
+
+function getSelectorTriggers(label: string) {
+  return screen
+      .getAllByLabelText(label)
+      .filter((element) => element.tagName === 'SUMMARY');
+}
 
 describe('Navbar stories', () => {
-  it('renders the official horizontal logo in the domain reference', () => {
-    const renderDomain = navbarMeta.render;
-    const domainArgs: NavbarProps = {
-      brand: <span>1e99</span>,
-      items: [],
-      navigationLabel: 'Navegação principal',
-      ...DomainWebsite.args,
-    };
-
-    render(renderDomain?.(domainArgs) ?? null);
+  it('keeps the official horizontal logo fixed in the playground', () => {
+    render(<NavbarPlayground {...defaultArgs} />);
 
     expect(screen.getByRole('img', {name: '1e99'})).toHaveAttribute(
         'src',
         '/brand/1e99-logo-horizontal.svg',
     );
-    const languageTriggers = screen
-        .getAllByLabelText('Idioma')
-        .filter((element) => element.tagName === 'SUMMARY');
-
-    expect(languageTriggers).toHaveLength(2);
-    const googleButtons = screen.getAllByRole('button', {name: 'Entrar com Google'});
-
-    expect(googleButtons).toHaveLength(2);
-    googleButtons.forEach((button) => expect(button).toHaveClass('bg-surface-raised', 'font-semibold'));
-
-    for (const mark of screen.getAllByTestId('google-mark')) {
-      expect(mark).toHaveAttribute('viewBox', '0 0 48 48');
-      expect(mark.querySelectorAll('path')).toHaveLength(4);
-    }
   });
 
-  it('uses the shared locale and Google controls in the curriculum reference', () => {
-    const renderCurriculum = Curriculo.render;
-    const curriculumArgs: NavbarProps = {
-      brand: <span>1e99</span>,
-      items: [],
-      navigationLabel: 'Página inicial do 1e99 Currículo',
-      ...Curriculo.args,
-    };
-
+  it('removes selector and Google controls from desktop and mobile actions', () => {
     render(
-        renderCurriculum?.(
-            curriculumArgs,
-        {} as Parameters<NonNullable<typeof renderCurriculum>>[1],
-        ) ?? null,
+        <NavbarPlayground
+          {...defaultArgs}
+          showGoogleSignIn={false}
+          showSelector={false}
+        />,
     );
 
-    const languageTrigger = screen.getByLabelText('Idioma: Português');
+    expect(screen.queryByRole('button', {name: 'Entrar com Google'})).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Idioma')).not.toBeInTheDocument();
 
-    expect(languageTrigger.tagName).toBe('SUMMARY');
-    const appsIcon = screen.getByRole('link', {name: 'Mais aplicativos'}).querySelector('svg');
-    const googleButton = screen.getByRole('button', {name: 'Entrar com Google'});
+    fireEvent.click(screen.getByLabelText('Abrir menu de navegação'));
 
-    expect(appsIcon).toHaveAttribute('viewBox', '0 0 24 24');
-    expect(appsIcon?.querySelectorAll('path')).toHaveLength(3);
-    expect(googleButton.parentElement).toHaveClass('w-52', 'shrink-0');
-    expect(googleButton).toHaveClass(
-        'bg-surface-raised',
-        'font-semibold',
+    const mobileNavigation = screen.getByRole('navigation', {
+      name: 'Navegação principal móvel',
+    });
+
+    expect(within(mobileNavigation).queryByRole(
+        'button',
+        {name: 'Entrar com Google'},
+    )).not.toBeInTheDocument();
+    expect(within(mobileNavigation).queryByLabelText('Idioma')).not.toBeInTheDocument();
+  });
+
+  it('builds desktop and mobile actions from custom labels and items', () => {
+    render(
+        <NavbarPlayground
+          {...defaultArgs}
+          googleSignInLabel="Continuar com Google"
+          items={[{href: '/biblioteca', label: 'Biblioteca'}]}
+          mobileNavigationLabel="Navegação personalizada móvel"
+          selectorLabel="Escolher idioma"
+          selectorOptions={[
+            {label: 'Français', value: 'fr'},
+            {label: 'Deutsch', value: 'de'},
+          ]}
+        />,
     );
 
-    fireEvent.click(languageTrigger);
-    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+    expect(screen.getAllByRole('link', {name: 'Biblioteca'})).toHaveLength(2);
+    expect(getSelectorTriggers('Escolher idioma')).toHaveLength(2);
+    expect(screen.getAllByRole('button', {name: 'Continuar com Google'})).toHaveLength(2);
 
-    expect(screen.getByLabelText('Idioma: English')).toBeVisible();
+    fireEvent.click(screen.getByLabelText('Abrir menu de navegação'));
+
+    const mobileNavigation = screen.getByRole('navigation', {
+      name: 'Navegação personalizada móvel',
+    });
+
+    expect(within(mobileNavigation).getByRole(
+        'link',
+        {name: 'Biblioteca'},
+    )).toBeVisible();
+    const mobileSelector = within(mobileNavigation)
+        .getAllByLabelText('Escolher idioma')
+        .find((element) => element.tagName === 'SUMMARY');
+
+    expect(mobileSelector).toBeVisible();
+    expect(within(mobileNavigation).getByRole(
+        'button',
+        {name: 'Continuar com Google'},
+    )).toBeVisible();
   });
 });

@@ -1,9 +1,38 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
-import {LuExternalLink} from 'react-icons/lu';
 import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
-import {Selector, type SelectorDensity} from '../selector/selector';
+import {Selector, type SelectorOption} from '../selector/selector';
 import {Navbar, type NavbarProps} from './navbar';
+
+type NavbarStoryItem = {
+  href: string;
+  label: string;
+};
+
+type NavbarSelectorOption = SelectorOption & {
+  label: string;
+};
+
+export type NavbarPlaygroundArgs = Omit<
+  NavbarProps,
+  'actions' | 'brand' | 'items' | 'mobileNavigation'
+> & {
+  googleSignInLabel: string;
+  items: readonly NavbarStoryItem[];
+  mobileMenuLabel: string;
+  mobileNavigationLabel: string;
+  selectorLabel: string;
+  selectorOptions: readonly NavbarSelectorOption[];
+  showGoogleSignIn: boolean;
+  showMobileNavigation: boolean;
+  showSelector: boolean;
+};
+
+const defaultSelectorOptions = [
+  {label: 'Português', value: 'pt'},
+  {label: 'English', value: 'en'},
+  {label: 'Español', value: 'es'},
+] as const;
 
 function BrandLogoPreview() {
   return (
@@ -23,127 +52,120 @@ function BrandLogoPreview() {
   );
 }
 
-const localeOptions = [
-  {label: 'Português', languageTag: 'pt-BR', value: 'pt'},
-  {label: 'English', languageTag: 'en', value: 'en'},
-  {label: 'Español', languageTag: 'es', value: 'es'},
-] as const;
-
-function LocalePreview({
-  density = 'standard',
-  getTriggerAriaLabel,
+function NavbarControls({
+  googleSignInLabel,
+  onValueChange,
+  selectorLabel,
+  selectorOptions,
+  showGoogleSignIn,
+  showSelector,
+  value,
 }: {
-  density?: SelectorDensity;
-  getTriggerAriaLabel?: (selectedLabel: string) => string;
+  googleSignInLabel: string;
+  onValueChange: (value: string) => void;
+  selectorLabel: string;
+  selectorOptions: readonly NavbarSelectorOption[];
+  showGoogleSignIn: boolean;
+  showSelector: boolean;
+  value: string;
 }) {
-  const [value, setValue] = useState('pt');
-  const selectedLabel =
-    localeOptions.find((option) => option.value === value)?.label ?? value;
-
   return (
-    <Selector
-      density={density}
-      label="Idioma"
-      onValueChange={setValue}
-      options={localeOptions}
-      renderOption={({option}) => (
-        <span lang={option.languageTag}>{option.label}</span>
-      )}
-      renderTrigger={({selectedOption, value: selectedValue}) => (
-        <span lang={selectedOption?.languageTag}>
-          {selectedOption?.label ?? selectedValue}
-        </span>
-      )}
-      triggerAriaLabel={getTriggerAriaLabel?.(selectedLabel)}
+    <>
+      {showSelector ? (
+        <Selector
+          label={selectorLabel}
+          onValueChange={onValueChange}
+          options={selectorOptions}
+          value={value}
+        />
+      ) : null}
+      {showGoogleSignIn ? (
+        <GoogleSignInButton label={googleSignInLabel} />
+      ) : null}
+    </>
+  );
+}
+
+export function NavbarPlayground({
+  googleSignInLabel,
+  items,
+  mobileMenuLabel,
+  mobileNavigationLabel,
+  selectorLabel,
+  selectorOptions,
+  showGoogleSignIn,
+  showMobileNavigation,
+  showSelector,
+  ...navbarProps
+}: NavbarPlaygroundArgs) {
+  const [selectedValue, setSelectedValue] = useState('');
+  const selectorValueIsAvailable = selectorOptions.some(
+      (option) => option.value === selectedValue,
+  );
+  const value = selectorValueIsAvailable ?
+    selectedValue : selectorOptions[0]?.value ?? '';
+  const hasSelector = showSelector && selectorOptions.length > 0;
+  const hasActions = hasSelector || showGoogleSignIn;
+
+  const controls = (
+    <NavbarControls
+      googleSignInLabel={googleSignInLabel}
+      onValueChange={setSelectedValue}
+      selectorLabel={selectorLabel}
+      selectorOptions={selectorOptions}
+      showGoogleSignIn={showGoogleSignIn}
+      showSelector={hasSelector}
       value={value}
     />
   );
-}
 
-function DomainActions() {
-  return (
-    <div className="hidden items-center gap-3 md:flex">
-      <LocalePreview />
-      <GoogleSignInButton label="Entrar com Google" />
-    </div>
-  );
-}
-
-function CurriculumActions() {
-  return (
-    <div className="flex items-center gap-2 sm:gap-3">
-      <LocalePreview
-        density="compact-mobile"
-        getTriggerAriaLabel={(selectedLabel) => `Idioma: ${selectedLabel}`}
-      />
-      <a
-        aria-label="Mais aplicativos"
-        className="hidden min-h-11 items-center justify-center gap-2 rounded-control px-2 text-label font-bold text-content-secondary transition-colors hover:bg-surface-subtle hover:text-content-primary sm:inline-flex sm:px-3"
-        href="/apps"
-      >
-        <span>Mais apps</span>
-        <LuExternalLink aria-hidden="true" className="size-4" />
-      </a>
-      <div className="w-52 shrink-0">
-        <GoogleSignInButton label="Entrar com Google" />
-      </div>
-    </div>
-  );
-}
-
-function renderDomain(args: NavbarProps) {
   return (
     <Navbar
-      {...args}
-      actions={<DomainActions />}
+      {...navbarProps}
+      actions={hasActions ? (
+        <div className="hidden items-center gap-3 md:flex">{controls}</div>
+      ) : undefined}
       brand={<BrandLogoPreview />}
-      mobileNavigation={{
-        actions: (
-          <>
-            <LocalePreview />
-            <GoogleSignInButton label="Entrar com Google" />
-          </>
-        ),
-        menuLabel: 'Abrir menu de navegação',
-        navigationLabel: 'Navegação principal móvel',
-      }}
-    />
-  );
-}
-
-function renderCurriculum(args: NavbarProps) {
-  return (
-    <Navbar
-      {...args}
-      actions={<CurriculumActions />}
-      brand={<BrandLogoPreview />}
+      items={items}
+      mobileNavigation={showMobileNavigation ? {
+        actions: hasActions ? controls : undefined,
+        menuLabel: mobileMenuLabel,
+        navigationLabel: mobileNavigationLabel,
+      } : undefined}
     />
   );
 }
 
 const meta = {
   title: 'Navigation/Navbar',
-  component: Navbar,
+  component: NavbarPlayground,
   parameters: {
     layout: 'fullscreen',
   },
   args: {
-    brand: <BrandLogoPreview />,
+    googleSignInLabel: 'Entrar com Google',
     items: [],
+    mobileMenuLabel: 'Abrir menu de navegação',
+    mobileNavigationLabel: 'Navegação principal móvel',
     navigationLabel: 'Navegação principal',
+    selectorLabel: 'Idioma',
+    selectorOptions: defaultSelectorOptions,
+    showGoogleSignIn: true,
+    showMobileNavigation: true,
+    showSelector: true,
   },
   argTypes: {
-    actions: {control: false},
-    brand: {control: false},
-    mobileNavigation: {control: false},
-    renderLink: {control: false},
+    items: {control: 'object'},
+    selectorOptions: {control: 'object'},
   },
-  render: renderDomain,
-} satisfies Meta<typeof Navbar>;
+  render: (args) => <NavbarPlayground {...args} />,
+} satisfies Meta<NavbarPlaygroundArgs>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};
 
 export const DomainWebsite: Story = {
   args: {
@@ -154,7 +176,6 @@ export const DomainWebsite: Story = {
     layer: 'above',
     linkTreatment: 'underlined',
     linkWeight: 'semibold',
-    navigationLabel: 'Navegação principal',
     width: 'content',
   },
 };
@@ -166,11 +187,9 @@ export const Curriculo: Story = {
       {href: '#planos', label: 'Preço'},
       {href: '#duvidas', label: 'Dúvidas'},
     ],
-    layer: 'standard',
     linkTreatment: 'plain',
     linkWeight: 'bold',
     navigationLabel: 'Página inicial do 1e99 Currículo',
     width: 'wide',
   },
-  render: renderCurriculum,
 };
