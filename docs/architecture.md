@@ -135,15 +135,26 @@ JavaScript e tipos.
 O workflow `CI` é executado em pull requests e pushes para `main`; ele valida
 lint, tipos, testes, build, Storybook e o conteúdo publicável. O workflow
 `Publish package` é acionado apenas por tags `v*`, exige que a tag seja igual a
-`v${package.json.version}` e só então executa `npm publish`.
+`v${package.json.version}`, verifica que o commit marcado pertence ao histórico
+de `main` e só então cria o artefato publicável. O job privilegiado recebe esse
+artefato e, isolado das etapas que executam código do projeto, executa
+`npm publish` com `id-token: write`. Todos os actions são fixados em SHAs.
 
 O primeiro release usa o secret temporário `NPM_TOKEN`, um token granular de
 curta duração com bypass de 2FA e permissão de publicação limitada a `@1e99`.
+Como o pacote ainda não existe nesse momento, essa é uma exceção temporária de
+escopo que deve ser revogada após a migração. O npm planeja remover publish
+direto com tokens granular de bypass de 2FA em janeiro de 2027; releases
+iniciais posteriores devem usar o fluxo de staged publishing suportado então.
 Depois que `@1e99/components` existir no npm, o mantenedor configura Trusted
 Publisher para GitHub Actions com organização `1e99`, repositório `components`
 e workflow `publish.yml`, permitindo `npm publish`. Então o secret é removido
 do GitHub e o token é revogado; as próximas releases usam OIDC com
 `id-token: write` e não mantêm uma credencial npm duradoura.
+
+As regras do repositório devem exigir o CI antes de merges em `main` e impedir
+que pessoas não autorizadas criem ou atualizem tags `v*`; o workflow é uma
+segunda barreira, não um substituto dessas proteções no GitHub.
 
 GitHub Packages permanece alternativa privada, mas exigiria configuração de
 registro e token em todos os consumidores; npm público é mais simples para os

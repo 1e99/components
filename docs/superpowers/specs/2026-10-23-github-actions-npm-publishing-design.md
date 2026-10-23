@@ -25,13 +25,16 @@ e a publicação pública inicial será `0.1.0`.
   `pnpm build`, `pnpm build-storybook` e `npm pack --dry-run`.
 - `.github/workflows/publish.yml` será executado apenas em tags `v*`. Ele
   confirma que a tag é exatamente `v${package.json.version}`, repete as
-  verificações de release e executa `npm publish`.
+  verificações de release, confirma que o commit marcado é ancestral de `main`
+  e cria o artefato a publicar.
 - Os dois workflows usarão runner hospedado do GitHub, Node 24 e a versão de
   pnpm declarada em `packageManager`, habilitada por Corepack.
-- O workflow de publicação receberá apenas `contents: read` e `id-token: write`.
-  `NODE_AUTH_TOKEN` virá opcionalmente de `secrets.NPM_TOKEN`: na primeira tag
-  é o token granular temporário; depois de configurar Trusted Publishing, o
-  secret será removido e o npm usará OIDC automaticamente.
+- A validação da release não recebe OIDC. Um job separado, sem instalação ou
+  build do projeto, baixa o artefato validado e recebe apenas `contents: read`
+  e `id-token: write`. `NODE_AUTH_TOKEN` é configurado opcionalmente a partir
+  de `secrets.NPM_TOKEN`: na primeira tag é o token granular temporário; depois
+  de configurar Trusted Publishing, o secret será removido e o npm usará OIDC
+  automaticamente.
 - `package.json` receberá `repository`, apontando ao remote GitHub, requisito
   para vincular a identidade do repositório à publicação confiável.
 
@@ -40,6 +43,9 @@ e a publicação pública inicial será `0.1.0`.
 - Nenhum token será escrito no repositório, nas actions ou na documentação.
 - A tag e a versão precisam corresponder para impedir uma publicação acidental
   de versão diferente daquela que foi revisada.
+- A tag deve apontar para um commit de `main`; regras do GitHub devem restringir
+  criação/atualização de `v*` e exigir o CI antes de merges.
+- Actions de terceiros serão fixados nos SHAs revisados, não em tags mutáveis.
 - A publicação continua pública por meio de `publishConfig.access: public`.
 - O escopo não altera consumidores, componentes nem API do pacote.
 - Não haverá push, tag ou publicação realizados pelo agente; a pessoa

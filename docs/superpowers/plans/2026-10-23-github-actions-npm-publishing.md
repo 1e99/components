@@ -16,13 +16,14 @@
 - Nunca gravar, imprimir ou solicitar o valor de `NPM_TOKEN`; ele é um secret já configurado no GitHub.
 - Usar o remote exato `https://github.com/1e99/components.git` no metadado `repository`.
 - O CI executa `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm build-storybook` e `npm pack --dry-run`.
-- O CD é ativado somente por `v*`, exige tag igual a `v${package.json.version}`, preserva `publishConfig.access: public` e executa `npm publish` sem `--provenance` manual.
-- O job de publicação recebe somente `contents: read` e `id-token: write`; o token tradicional é transição para o primeiro publish e será removido após Trusted Publishing.
+- O CD é ativado somente por `v*`, exige tag igual a `v${package.json.version}` em um commit ancestral de `main`, preserva `publishConfig.access: public` e executa `npm publish` sem `--provenance` manual.
+- O job de publicação recebe somente `contents: read` e `id-token: write`, baixa um artefato já verificado e não instala nem executa o projeto; o token tradicional é transição para o primeiro publish e será removido após Trusted Publishing.
+- Fixar actions de terceiros nos SHAs revisados e configurar regras do GitHub para proteger `main` e tags `v*`.
 - Não alterar componentes, APIs, consumidores nem a versão nesta tarefa.
 
 ## Review Focus
 
-- Uma tag como `v0.1.1` com `package.json` em `0.1.0` deve falhar antes do publish; cobrir na Task 2 pela validação explícita da tag.
+- Uma tag como `v0.1.1` com `package.json` em `0.1.0`, ou fora do histórico de `main`, deve falhar antes do publish; cobrir na Task 2 pela validação explícita da tag e ancestralidade.
 - Um push comum em `main` ou uma pull request deve executar CI, mas nunca publicar; cobrir na Task 1 por gatilhos separados.
 - A ausência futura de `NPM_TOKEN` não pode bloquear Trusted Publishing; cobrir na Task 2 deixando o secret opcional e mantendo `id-token: write`.
 - O artefato publicado deve continuar limitado aos arquivos da configuração `files`; cobrir em ambas as pipelines com `npm pack --dry-run`.
@@ -89,7 +90,10 @@
 
 - [ ] **Step 1: Escrever a validação de tag antes da publicação.**
 
-  Em `.github/workflows/publish.yml`, definir `on.push.tags: ['v*']`, permissões de workflow `contents: read` e `id-token: write`, e uma etapa shell que falha se `GITHUB_REF_NAME` for diferente de `v$(node -p "require('./package.json').version")`.
+  Em `.github/workflows/publish.yml`, definir `on.push.tags: ['v*']` e uma etapa
+  shell no job sem OIDC que falha se `GITHUB_REF_NAME` for diferente de
+  `v$(node -p "require('./package.json').version")` ou se o commit da tag não
+  for ancestral de `origin/main`.
 
 - [ ] **Step 2: Validar que o workflow é aceito e não usa token fixo no YAML.**
 
@@ -99,7 +103,12 @@
 
 - [ ] **Step 3: Implementar o job de release.**
 
-  Repetir checkout, Node 24, Corepack, instalação congelada e todas as validações do CI; atribuir `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` somente à etapa `npm publish`. Manter `id-token: write` para OIDC e executar `npm publish` sem flag de token, para que ele use o secret no primeiro release e OIDC depois da migração.
+  No job sem OIDC, repetir checkout, Node 24, Corepack, instalação congelada e
+  todas as validações do CI; gerar e enviar o tarball como artefato. Em job
+  separado, fixar os actions por SHA, baixar o artefato, atribuir
+  `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` apenas à configuração condicional
+  do bootstrap e executar `npm publish` com `id-token: write`. Assim o primeiro
+  release usa o secret e os seguintes usam OIDC.
 
 - [ ] **Step 4: Executar a verificação local equivalente ao release.**
 

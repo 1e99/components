@@ -208,7 +208,8 @@ aplicativos.
 `.github/workflows/ci.yml` valida pull requests e pushes para `main` com lint,
 tipos, testes, build, Storybook e prévia do tarball. `.github/workflows/publish.yml`
 repete essas verificações e publica somente quando uma tag `vX.Y.Z` corresponde
-exatamente à versão em `package.json`.
+exatamente à versão em `package.json` e aponta para um commit ancestral de
+`main`. Os actions usados nos workflows estão fixados em commits revisáveis.
 
 ### Primeiro release pelo CI
 
@@ -218,6 +219,16 @@ npm como token granular, com **Bypass two-factor authentication**, permissão
 curta. Salve-o em GitHub → `1e99/components` → Settings → Secrets and variables
 → Actions como `NPM_TOKEN`. Nunca grave ou compartilhe esse valor por chat,
 issues, commits ou logs.
+
+Como `@1e99/components` ainda não existe antes do primeiro publish, o escopo
+inteiro é uma exceção temporária de bootstrap: revogue o token assim que OIDC
+for configurado. O npm anuncia a remoção do publish direto com tokens granular
+de bypass de 2FA em janeiro de 2027; se o primeiro release for adiado além
+disso, use o fluxo de staged publishing do npm em vez de manter um token.
+
+Antes de criar a tag pública, confirme a política de licença: o pacote está
+como `UNLICENSED` e essa decisão precisa de aprovação explícita para publicação
+pública.
 
 Envie os commits e a tag correspondente à versão:
 
@@ -229,6 +240,8 @@ git push origin v0.1.0
 
 O workflow recusa a tag se `package.json` não estiver em `0.1.0` e publica com
 `publishConfig.access: public` se todas as verificações passarem.
+Configure também regras do GitHub para exigir o CI antes de merge em `main` e
+restringir a criação e atualização de tags `v*` a mantenedores autorizados.
 
 ### Migrar para Trusted Publishing
 
