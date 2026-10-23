@@ -1,8 +1,8 @@
 # @1e99/components
 
 Componentes React compartilhados pelos produtos 1e99. O primeiro componente é
-`Navbar`, extraído das implementações de `domain-website` e `curriculo` sem
-introduzir dependência de Next.js, autenticação ou i18n.
+`Navbar`, extraído fielmente das implementações de `domain-website` e
+`curriculo` sem introduzir dependência de Next.js, autenticação ou i18n.
 
 ## Instalação futura
 
@@ -31,7 +31,8 @@ Nos consumidores atuais, a alteração futura será em:
 
 Os dois projetos já fornecem os tokens usados pela navbar, incluindo
 `surface-page`, `content-primary`, `content-secondary`, `border-subtle`,
-`action-primary`, `shadow-focus`, `ease-brand`, `shell`, `control` e `card`.
+`action-primary`, `surface-raised`, `content-inverse`, `shadow-card`,
+`shadow-float`, `shadow-focus`, `ease-brand`, `shell`, `control` e `card`.
 O pacote não redefine esses tokens nem importa CSS global no aplicativo.
 
 ## Uso
@@ -49,23 +50,36 @@ import { Navbar } from "@1e99/components";
   renderLink={({ href, children, className }) => (
     <Link className={className} href={href}>{children}</Link>
   )}
-  actions={<AccountActions />}
+  actions={
+    <div className="hidden items-center gap-3 md:flex">
+      <LocaleSwitcher />
+      <AccountActions />
+    </div>
+  }
   width="content"
+  layer="above"
   linkTreatment="underlined"
-  mobileNavigation="disclosure"
-  menuLabel="Abrir menu de navegação"
-  mobileNavigationLabel="Navegação principal móvel"
-  mobileActions={<MobileAccountActions />}
+  linkWeight="semibold"
+  mobileNavigation={{
+    menuLabel: "Abrir menu de navegação",
+    navigationLabel: "Navegação principal móvel",
+    actions: <MobileAccountActions />,
+  }}
 />
 ```
 
 | Prop | Opções | Uso nos projetos existentes |
 | --- | --- | --- |
 | `width` | `content` (padrão), `wide` | domain-website / curriculo |
+| `layer` | `standard` (padrão), `above` | curriculo / domain-website |
 | `linkTreatment` | `plain` (padrão), `underlined` | curriculo / domain-website |
-| `mobileNavigation` | `hidden` (padrão), `disclosure` | curriculo / domain-website |
+| `linkWeight` | `semibold` (padrão), `bold` | domain-website / curriculo |
+| `mobileNavigation` | ausente ou objeto de disclosure | curriculo / domain-website |
 
-`brand`, `actions` e `mobileActions` são slots. `renderLink` recebe `href`,
+`brand` e `actions` são slots e, junto da navegação desktop, permanecem como
+regiões irmãs no container — o mesmo layout dos dois headers fonte. O objeto
+`mobileNavigation` reproduz o menu do domain (botão azul de 48px e painel
+elevado); ele fica ausente no perfil do currículo. `renderLink` recebe `href`,
 `children` e `className`, permitindo usar `next/link`, `next-intl/link` ou
 outro roteador sem acoplar o pacote a ele.
 
@@ -81,7 +95,8 @@ pnpm pack:check
 ```
 
 `pnpm test` roda testes de contrato em Vitest + Testing Library. As stories
-exibem os perfis dos dois aplicativos e são verificadas em Chromium por
+exibem os perfis fiéis dos dois aplicativos, incluindo o SVG oficial somente
+como asset de demonstração do Storybook, e são verificadas em Chromium por
 `pnpm test:stories`, com os addons oficiais de acessibilidade e Vitest.
 
 Em uma máquina Linux nova, instale as dependências do Chromium uma vez antes

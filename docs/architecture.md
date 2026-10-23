@@ -14,13 +14,17 @@ fornecidos pelo aplicativo consumidor.
 
 Ambas possuem cabeçalho fixo, fundo translúcido, borda inferior, conteúdo
 centralizado com altura mínima de 80 px, logo à esquerda, links de navegação
-visíveis a partir de `lg` e área de ações à direita. Elas usam React 19,
-Tailwind CSS 4.3 e os mesmos tokens da marca.
+visíveis a partir de `lg` e área de ações à direita. Marca, navegação e ações
+são regiões irmãs do container; essa estrutura é importante para preservar o
+alinhamento que já existe nos sites. Elas usam React 19, Tailwind CSS 4.3 e os
+mesmos tokens da marca.
 
 | Aspecto | domain-website | curriculo | Decisão do pacote |
 | --- | --- | --- | --- |
 | Largura | `max-w-5xl` | `max-w-7xl` | variant `width` |
+| Camada | `z-50` | `z-40` | variant `layer` |
 | Links | sublinhado animado | simples | variant `linkTreatment` |
+| Peso dos links | `font-semibold` | `font-bold` | variant `linkWeight` |
 | Mobile | disclosure com menu e ações | links ocultos, sem menu | variant `mobileNavigation` |
 | Link | `next-intl` | `next/link` e `a` | renderização injetada pelo consumidor |
 | Ações | idioma + conta/login | apps + CTA + conta/login | slots injetados pelo consumidor |
@@ -37,19 +41,21 @@ os aplicativos e mantém a navbar compatível com React fora de Next.js.
 - `brand`: nó React do link e logo da marca;
 - `items`: links com `href` e `label`;
 - `renderLink`: função opcional para integrar o roteador do consumidor;
-- `actions`: nó React para a área direita do cabeçalho;
-- `mobileActions`: nó React renderizado no disclosure móvel;
-- rótulos acessíveis do menu e das navegações desktop/móvel;
-- variants `width` (`content` ou `wide`), `linkTreatment` (`underlined` ou
-  `plain`) e `mobileNavigation` (`disclosure` ou `hidden`).
+- `actions`: nó React direto para a área direita do cabeçalho; o consumidor
+  fornece o próprio wrapper responsivo para preservar seus controles;
+- `mobileNavigation`: objeto opcional com `menuLabel`, `navigationLabel` e
+  `actions` para o disclosure do domain;
+- variants `width` (`content` ou `wide`), `layer` (`standard` ou `above`),
+  `linkTreatment` (`underlined` ou `plain`) e `linkWeight` (`semibold` ou
+  `bold`).
 
 O disclosure usa elementos HTML nativos, portanto o componente permanece
 compatível com renderização no servidor e não introduz uma dependência de
 estado ou de framework.
 
-`content`, `plain` e `hidden` são os defaults. O disclosure permanece visível
-até `lg`, o mesmo breakpoint em que a navegação desktop aparece, para não
-deixar uma faixa sem navegação entre os layouts.
+`content`, `standard`, `plain` e `semibold` são os defaults. O disclosure só
+existe quando `mobileNavigation` é fornecido e usa `md:hidden`, igual ao
+domain-website; o currículo não o fornece.
 
 ## Tailwind
 
@@ -65,11 +71,12 @@ da folha CSS no aplicativo consumidor.
 
 ## Visualização e qualidade
 
-Storybook React/Vite exibirá a navbar em suas combinações de variants, com
-viewport móvel para o disclosure. Vitest e Testing Library cobrirão semântica
-de navegação, links, slots de ação e cada comportamento móvel. Storybook
-também terá os addons Vitest e accessibility para tornar as stories pontos de
-partida de teste visual e de interação.
+Storybook React/Vite exibe os perfis visuais fiéis dos dois headers, com o SVG
+oficial de logo apenas em `.storybook/public`, viewport móvel para o
+disclosure e os tokens reais de superfície, sombra e tipografia. Vitest e
+Testing Library cobrem semântica, layout de regiões irmãs, variantes e menu
+móvel. Storybook também tem os addons Vitest e accessibility para tornar as
+stories pontos de partida de teste visual e de interação.
 
 ## Publicação
 
