@@ -37,6 +37,8 @@ describe('LocaleSelector', () => {
     expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
     expect(englishButton).toHaveAttribute('aria-pressed', 'false');
     expect(englishButton).toHaveClass('select-none');
+    expect(englishButton).not.toHaveAttribute('aria-current');
+    expect(englishButton).not.toHaveAttribute('href');
 
     fireEvent.click(trigger);
     expect(disclosure).toHaveAttribute('open');
@@ -138,6 +140,35 @@ describe('LocaleSelector', () => {
     expect(screen.getByRole('status')).toHaveTextContent('en');
     expect(screen.getByLabelText('Idioma do currículo: English')).toBeVisible();
     expect(screen.getByRole('button', {name: 'English'})).toHaveAttribute('aria-pressed', 'true');
+    expect(disclosure).not.toHaveAttribute('open');
+  });
+
+  it('requests a document locale change without mutating the controlled value', () => {
+    const onValueChange = vi.fn();
+
+    render(
+        <LocaleSelector
+          label="Idioma do currículo"
+          onValueChange={onValueChange}
+          options={options}
+          triggerAriaLabel="Idioma do currículo: Português"
+          value="pt"
+          variant="document"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Idioma do currículo: Português');
+    const disclosure = trigger.parentElement;
+    const portugueseButton = screen.getByRole('button', {name: 'Português'});
+    const englishButton = screen.getByRole('button', {name: 'English'});
+
+    fireEvent.click(trigger);
+    fireEvent.click(englishButton);
+
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenCalledWith('en');
+    expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
+    expect(englishButton).toHaveAttribute('aria-pressed', 'false');
     expect(disclosure).not.toHaveAttribute('open');
   });
 });
