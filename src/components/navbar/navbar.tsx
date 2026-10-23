@@ -1,4 +1,5 @@
 import {Fragment, type ReactNode} from 'react';
+import {LuMenu} from 'react-icons/lu';
 
 export type NavbarItem = {
   href: string;
@@ -100,17 +101,7 @@ export function Navbar({
               className="flex size-12 cursor-pointer list-none items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
             >
               <span className="sr-only">{mobileNavigation.menuLabel}</span>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className="size-6"
-              >
-                <path d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
+              <LuMenu aria-hidden="true" className="size-6" />
             </summary>
             <nav
               aria-label={mobileNavigation.navigationLabel}

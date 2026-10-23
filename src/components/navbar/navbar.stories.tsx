@@ -1,4 +1,5 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
+import {LuExternalLink} from 'react-icons/lu';
 import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
 import {LocaleSelector, type LocaleSelectorDensity} from '../locale-selector/locale-selector';
 import {Navbar, type NavbarProps} from './navbar';
@@ -65,20 +66,7 @@ function CurriculumActions() {
         href="/apps"
       >
         <span>Mais apps</span>
-        <svg
-          aria-hidden="true"
-          className="size-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M14 3h7v7M10 14 21 3M21 14v7h-7M3 10V3h7M3 14v7h7"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-          />
-        </svg>
+        <LuExternalLink aria-hidden="true" className="size-4" />
       </a>
       <div className="w-52 shrink-0">
         <GoogleSignInButton label="Entrar com Google" />

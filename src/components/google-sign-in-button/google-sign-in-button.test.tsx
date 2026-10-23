@@ -20,6 +20,7 @@ describe('GoogleSignInButton', () => {
         'hover:bg-brand-cloud',
     );
     expect(mark).toHaveAttribute('viewBox', '0 0 48 48');
+    expect(mark).toHaveAttribute('version', '1.1');
     expect(mark?.querySelectorAll('path')).toHaveLength(4);
   });
 

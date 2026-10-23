@@ -136,6 +136,10 @@ describe('Navbar', () => {
     );
 
     const menuTrigger = screen.getByLabelText('Open navigation menu');
+    const menuIcon = menuTrigger.querySelector('svg');
+
+    expect(menuIcon?.querySelectorAll('line')).toHaveLength(3);
+    expect(menuIcon).toHaveAttribute('stroke-linejoin', 'round');
     expect(menuTrigger.closest('details')).toHaveClass('relative', 'md:hidden');
     expect(menuTrigger).toHaveClass(
         'size-12',

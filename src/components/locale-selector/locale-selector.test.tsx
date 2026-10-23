@@ -24,6 +24,7 @@ describe('LocaleSelector', () => {
     const trigger = screen.getByLabelText('Idioma: Português');
     const disclosure = trigger.parentElement;
 
+    expect(trigger.querySelector('svg')).toHaveAttribute('viewBox', '0 0 24 24');
     expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('aria-current', 'page');
     expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('href', '/pt');
     expect(screen.getByRole('link', {name: 'Português'})).toHaveAttribute('lang', 'pt-BR');
@@ -82,6 +83,7 @@ describe('LocaleSelector', () => {
     const trigger = screen.getByLabelText('Idioma do currículo: Português');
     const disclosure = trigger.parentElement;
 
+    expect(trigger.querySelector('svg')).toHaveAttribute('viewBox', '0 0 24 24');
     expect(disclosure).toHaveClass('document-locale-disclosure');
     expect(screen.getByRole('list', {name: 'Idioma do currículo'})).toHaveClass('fixed', 'z-60');
     expect(screen.getByRole('button', {name: 'Português'})).toHaveAttribute('aria-pressed', 'true');

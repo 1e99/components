@@ -52,8 +52,11 @@ describe('Navbar stories', () => {
     );
 
     expect(screen.getByLabelText('Idioma: Português').tagName).toBe('SUMMARY');
+    const appsIcon = screen.getByRole('link', {name: 'Mais aplicativos'}).querySelector('svg');
     const googleButton = screen.getByRole('button', {name: 'Entrar com Google'});
 
+    expect(appsIcon).toHaveAttribute('viewBox', '0 0 24 24');
+    expect(appsIcon?.querySelectorAll('path')).toHaveLength(3);
     expect(googleButton.parentElement).toHaveClass('w-52', 'shrink-0');
     expect(googleButton).toHaveClass(
         'bg-surface-raised',

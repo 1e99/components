@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useRef, type ReactNode} from 'react';
+import {LuChevronDown} from 'react-icons/lu';
 
 export type LocaleSelectorOption = {
   label: ReactNode;
@@ -62,16 +63,10 @@ function LocaleTrigger({densityClassName, option, triggerAriaLabel, value}: {
   return (
     <summary aria-label={triggerAriaLabel} className={`${standardTriggerClassName} ${densityClassName}`}>
       <span lang={option?.languageTag}>{option?.label ?? value}</span>
-      <svg
+      <LuChevronDown
         aria-hidden="true"
         className="locale-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none group-open:rotate-180"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        viewBox="0 0 20 20"
-      >
-        <path d="m6 8 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      />
     </summary>
   );
 }
@@ -178,16 +173,10 @@ function DocumentLocaleSelector({
         <span lang={selectedOption?.languageTag}>
           {selectedOption?.label ?? value}
         </span>
-        <svg
+        <LuChevronDown
           aria-hidden="true"
           className="document-locale-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none group-open:rotate-180"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          viewBox="0 0 20 20"
-        >
-          <path d="m6 8 4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        />
       </summary>
       <ul
         ref={menuReference}
