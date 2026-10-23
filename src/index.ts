@@ -3,7 +3,6 @@ export type {GoogleSignInButtonProps} from './components/google-sign-in-button/g
 export {LocaleSelector} from './components/locale-selector/locale-selector';
 export type {
   LocaleSelectorDensity,
-  LocaleSelectorDocumentProps,
   LocaleSelectorNavigationOption,
   LocaleSelectorNavigationProps,
   LocaleSelectorOption,

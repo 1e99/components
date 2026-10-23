@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, type ReactNode} from 'react';
+import {type ReactNode} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
 
 export type LocaleSelectorOption = {
@@ -17,23 +17,14 @@ type LocaleSelectorBaseProps = {
   value: string;
 };
 
-export type LocaleSelectorNavigationProps = LocaleSelectorBaseProps & {
+export type LocaleSelectorProps = LocaleSelectorBaseProps & {
   density?: LocaleSelectorDensity;
   onValueChange: (value: string) => void;
-  options: readonly LocaleSelectorNavigationOption[];
-  variant: 'navigation';
+  options: readonly LocaleSelectorOption[];
   whiteSurface?: boolean;
 };
 
-export type LocaleSelectorDocumentProps = LocaleSelectorBaseProps & {
-  onValueChange: (value: string) => void;
-  options: readonly LocaleSelectorOption[];
-  variant: 'document';
-};
-
-export type LocaleSelectorProps =
-  | LocaleSelectorNavigationProps
-  | LocaleSelectorDocumentProps;
+export type LocaleSelectorNavigationProps = LocaleSelectorProps;
 
 const standardTriggerClassName =
   'flex w-full cursor-pointer list-none select-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden';
@@ -74,7 +65,7 @@ function LocaleTrigger({densityClassName, option, triggerAriaLabel, value}: {
   );
 }
 
-function NavigationLocaleSelector({
+export function LocaleSelector({
   density = 'standard',
   label,
   onValueChange,
@@ -82,7 +73,7 @@ function NavigationLocaleSelector({
   triggerAriaLabel = label,
   value,
   whiteSurface = false,
-}: LocaleSelectorNavigationProps) {
+}: LocaleSelectorProps) {
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
   const surfaceClassName = whiteSurface ? 'bg-white' : 'bg-surface-raised';
@@ -121,103 +112,5 @@ function NavigationLocaleSelector({
         })}
       </ul>
     </details>
-  );
-}
-
-function DocumentLocaleSelector({
-  label,
-  onValueChange,
-  options,
-  triggerAriaLabel = label,
-  value,
-}: LocaleSelectorDocumentProps) {
-  const detailsReference = useRef<HTMLDetailsElement>(null);
-  const triggerReference = useRef<HTMLElement>(null);
-  const menuReference = useRef<HTMLUListElement>(null);
-  const selectedOption = options.find((option) => option.value === value);
-
-  const positionMenu = useCallback(() => {
-    const trigger = triggerReference.current;
-    const menu = menuReference.current;
-
-    if (!trigger || !menu) return;
-
-    const bounds = trigger.getBoundingClientRect();
-    menu.style.top = `${bounds.bottom + 8}px`;
-    menu.style.left = `${bounds.left}px`;
-    menu.style.width = `${bounds.width}px`;
-  }, []);
-
-  useEffect(() => {
-    const details = detailsReference.current;
-    if (!details) return;
-
-    const handleToggle = () => {
-      if (!details.open) {
-        window.removeEventListener('resize', positionMenu);
-        return;
-      }
-
-      positionMenu();
-      window.addEventListener('resize', positionMenu);
-    };
-
-    details.addEventListener('toggle', handleToggle);
-    return () => {
-      details.removeEventListener('toggle', handleToggle);
-      window.removeEventListener('resize', positionMenu);
-    };
-  }, [positionMenu]);
-
-  return (
-    <details ref={detailsReference} className="document-locale-disclosure group relative mt-2 w-full">
-      <summary
-        ref={triggerReference}
-        aria-label={triggerAriaLabel}
-        className={`${standardTriggerClassName} min-h-12 gap-4 px-4`}
-      >
-        <span lang={selectedOption?.languageTag}>
-          {selectedOption?.label ?? value}
-        </span>
-        <LuChevronDown
-          aria-hidden="true"
-          className="document-locale-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none group-open:rotate-180"
-        />
-      </summary>
-      <ul
-        ref={menuReference}
-        aria-label={label}
-        className="fixed z-60 overflow-hidden rounded-control border border-border-subtle bg-surface-raised p-1 shadow-float"
-      >
-        {options.map((option) => {
-          const isSelected = option.value === value;
-
-          return (
-            <li key={option.value}>
-              <button
-                aria-pressed={isSelected}
-                className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
-                lang={option.languageTag}
-                onClick={(event) => {
-                  onValueChange(option.value);
-                  closeLocaleDisclosure(event.currentTarget);
-                }}
-                type="button"
-              >
-                {option.label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </details>
-  );
-}
-
-export function LocaleSelector(props: LocaleSelectorProps) {
-  return props.variant === 'navigation' ? (
-    <NavigationLocaleSelector {...props} />
-  ) : (
-    <DocumentLocaleSelector {...props} />
   );
 }

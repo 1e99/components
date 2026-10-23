@@ -48,7 +48,6 @@ function LocalePreview({
       options={localeOptions}
       triggerAriaLabel={getTriggerAriaLabel?.(selectedLabel)}
       value={value}
-      variant="navigation"
     />
   );
 }
