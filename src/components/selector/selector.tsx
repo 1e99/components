@@ -1,4 +1,4 @@
-import {type ReactNode} from 'react';
+import {type ReactNode, useEffect, useRef} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
 
 export type SelectorOption = {
@@ -100,12 +100,38 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   value,
   whiteSurface = false,
 }: SelectorProps<TOption>) {
+  const selectorReference = useRef<HTMLDetailsElement>(null);
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
   const surfaceClassName = whiteSurface ? 'bg-white' : 'bg-surface-raised';
 
+  useEffect(() => {
+    const closeWhenPointerStartsOutside = (event: PointerEvent) => {
+      const selector = selectorReference.current;
+
+      if (
+        !selector?.open ||
+        !(event.target instanceof Node) ||
+        selector.contains(event.target)
+      ) {
+        return;
+      }
+
+      selector.removeAttribute('open');
+    };
+
+    document.addEventListener('pointerdown', closeWhenPointerStartsOutside);
+
+    return () => {
+      document.removeEventListener('pointerdown', closeWhenPointerStartsOutside);
+    };
+  }, []);
+
   return (
-    <details className={`selector-disclosure group relative ${layout.wrapper}`}>
+    <details
+      ref={selectorReference}
+      className={`selector-disclosure group relative ${layout.wrapper}`}
+    >
       <SelectorTrigger
         densityClassName={layout.trigger}
         renderTrigger={renderTrigger}

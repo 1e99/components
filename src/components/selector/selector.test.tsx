@@ -55,6 +55,28 @@ describe('Selector', () => {
     expect(disclosure).not.toHaveAttribute('open');
   });
 
+  it('closes an open selector when a pointer starts outside it', () => {
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => undefined}
+          options={languageOptions}
+          triggerAriaLabel="Idioma: Português"
+          value="pt"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Idioma: Português');
+    const disclosure = trigger.parentElement;
+
+    fireEvent.click(trigger);
+    expect(disclosure).toHaveAttribute('open');
+
+    fireEvent.pointerDown(document.body);
+
+    expect(disclosure).not.toHaveAttribute('open');
+  });
+
   it('renders the selection supplied by a controlled consumer', () => {
     function LanguageExample() {
       const [value, setValue] = useState('pt');
