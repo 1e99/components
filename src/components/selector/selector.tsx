@@ -155,8 +155,8 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
                 aria-pressed={isSelected}
                 className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
                 onClick={(event) => {
-                  select();
                   closeSelectorDisclosure(event.currentTarget);
+                  select();
                 }}
                 type="button"
               >

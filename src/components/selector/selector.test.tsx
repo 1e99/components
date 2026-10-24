@@ -77,6 +77,31 @@ describe('Selector', () => {
     expect(disclosure).not.toHaveAttribute('open');
   });
 
+  it('closes the selector before notifying a consumer of a new value', () => {
+    let disclosure: HTMLElement | null = null;
+    let wasOpenWhenValueChanged: boolean | undefined;
+
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => {
+            wasOpenWhenValueChanged = disclosure?.hasAttribute('open');
+          }}
+          options={languageOptions}
+          triggerAriaLabel="Idioma: Português"
+          value="pt"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Idioma: Português');
+    disclosure = trigger.parentElement;
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    expect(wasOpenWhenValueChanged).toBe(false);
+  });
+
   it('renders the selection supplied by a controlled consumer', () => {
     function LanguageExample() {
       const [value, setValue] = useState('pt');
