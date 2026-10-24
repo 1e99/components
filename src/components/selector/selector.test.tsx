@@ -1,4 +1,4 @@
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {useState} from 'react';
 import {describe, expect, it, vi} from 'vitest';
 import {Selector, type SelectorRenderOptionContext} from './selector';
@@ -15,7 +15,7 @@ const catalogOptions = [
 ] as const;
 
 describe('Selector', () => {
-  it('requests a value change without navigating or changing its controlled value', () => {
+  it('requests a value change without navigating or changing its controlled value', async () => {
     const onValueChange = vi.fn();
 
     render(
@@ -29,30 +29,37 @@ describe('Selector', () => {
     );
 
     const trigger = screen.getByLabelText('Idioma: Português');
-    const disclosure = trigger.parentElement;
-    const portugueseButton = screen.getByRole('button', {name: 'Português'});
-    const englishButton = screen.getByRole('button', {name: 'English'});
+    const selector = trigger.parentElement;
 
     expect(trigger.querySelector('svg')).toHaveAttribute('viewBox', '0 0 24 24');
     expect(trigger).toHaveClass('select-none');
-    expect(disclosure).toHaveClass('selector-disclosure');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(selector).toHaveClass('selector-disclosure');
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
+
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+    const portugueseButton = screen.getByRole('button', {name: 'Português'});
+    const englishButton = screen.getByRole('button', {name: 'English'});
+
     expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
     expect(englishButton).toHaveAttribute('aria-pressed', 'false');
     expect(englishButton).toHaveClass('select-none');
     expect(englishButton).not.toHaveAttribute('aria-current');
     expect(englishButton).not.toHaveAttribute('href');
 
-    fireEvent.click(trigger);
-    expect(disclosure).toHaveAttribute('open');
-
     fireEvent.click(englishButton);
 
-    expect(onValueChange).toHaveBeenCalledTimes(1);
-    expect(onValueChange).toHaveBeenCalledWith('en');
+    await waitFor(() => {
+      expect(onValueChange).toHaveBeenCalledTimes(1);
+      expect(onValueChange).toHaveBeenCalledWith('en');
+    });
+
     expect(portugueseButton).toHaveAttribute('aria-pressed', 'true');
     expect(englishButton).toHaveAttribute('aria-pressed', 'false');
-    expect(disclosure).not.toHaveAttribute('open');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('list', {name: 'Idioma'})).not.toBeInTheDocument();
   });
 
   it('closes an open selector when a pointer starts outside it', () => {
@@ -67,14 +74,14 @@ describe('Selector', () => {
     );
 
     const trigger = screen.getByLabelText('Idioma: Português');
-    const disclosure = trigger.parentElement;
 
     fireEvent.click(trigger);
-    expect(disclosure).toHaveAttribute('open');
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
     fireEvent.pointerDown(document.body);
 
-    expect(disclosure).not.toHaveAttribute('open');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('list', {name: 'Idioma'})).not.toBeInTheDocument();
   });
 
   it('closes an open selector when an outside target stops pointer propagation', () => {
@@ -94,25 +101,25 @@ describe('Selector', () => {
     );
 
     const trigger = screen.getByLabelText('Idioma: Português');
-    const disclosure = trigger.parentElement;
 
     fireEvent.click(trigger);
-    expect(disclosure).toHaveAttribute('open');
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
     fireEvent.pointerDown(screen.getByRole('button', {name: 'Outside'}));
 
-    expect(disclosure).not.toHaveAttribute('open');
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('list', {name: 'Idioma'})).not.toBeInTheDocument();
   });
 
   it('closes the selector before notifying a consumer of a new value', () => {
-    let disclosure: HTMLElement | null = null;
+    let trigger: HTMLElement | null = null;
     let wasOpenWhenValueChanged: boolean | undefined;
 
     render(
         <Selector
           label="Idioma"
           onValueChange={() => {
-            wasOpenWhenValueChanged = disclosure?.hasAttribute('open');
+            wasOpenWhenValueChanged = trigger?.getAttribute('aria-expanded') === 'true';
           }}
           options={languageOptions}
           triggerAriaLabel="Idioma: Português"
@@ -120,8 +127,7 @@ describe('Selector', () => {
         />,
     );
 
-    const trigger = screen.getByLabelText('Idioma: Português');
-    disclosure = trigger.parentElement;
+    trigger = screen.getByLabelText('Idioma: Português');
 
     fireEvent.click(trigger);
     fireEvent.click(screen.getByRole('button', {name: 'English'}));
@@ -129,15 +135,42 @@ describe('Selector', () => {
     expect(wasOpenWhenValueChanged).toBe(false);
   });
 
+  it('removes its option list before notifying a consumer', async () => {
+    let optionListWasRenderedWhenValueChanged: boolean | undefined;
+    const onValueChange = vi.fn(() => {
+      optionListWasRenderedWhenValueChanged =
+        document.querySelector('ul[aria-label="Idioma"]') !== null;
+    });
+
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={onValueChange}
+          options={languageOptions}
+          triggerAriaLabel="Idioma: Português"
+          value="pt"
+        />,
+    );
+
+    fireEvent.click(screen.getByLabelText('Idioma: Português'));
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    await waitFor(() => {
+      expect(onValueChange).toHaveBeenCalledWith('en');
+    });
+
+    expect(optionListWasRenderedWhenValueChanged).toBe(false);
+  });
+
   it('closes the selector before a custom option notifies a consumer', () => {
-    let disclosure: HTMLElement | null = null;
+    let trigger: HTMLElement | null = null;
     let wasOpenWhenValueChanged: boolean | undefined;
 
     render(
         <Selector
           label="Idioma"
           onValueChange={() => {
-            wasOpenWhenValueChanged = disclosure?.hasAttribute('open');
+            wasOpenWhenValueChanged = trigger?.getAttribute('aria-expanded') === 'true';
           }}
           options={languageOptions}
           renderOption={({option, select}) => (
@@ -155,8 +188,7 @@ describe('Selector', () => {
         />,
     );
 
-    const trigger = screen.getByLabelText('Idioma: Português');
-    disclosure = trigger.parentElement;
+    trigger = screen.getByLabelText('Idioma: Português');
 
     fireEvent.click(trigger);
     fireEvent.click(screen.getByText('English', {selector: 'span'}));
@@ -189,6 +221,7 @@ describe('Selector', () => {
 
     expect(screen.getByRole('status')).toHaveTextContent('en');
     expect(screen.getByLabelText('Idioma: English')).toBeVisible();
+    fireEvent.click(screen.getByLabelText('Idioma: English'));
     expect(screen.getByRole('button', {name: 'English'})).toHaveAttribute(
         'aria-pressed',
         'true',
@@ -246,7 +279,7 @@ describe('Selector', () => {
         />,
     );
 
-    expect(screen.getByText('unknown', {selector: 'summary span'})).toBeVisible();
+    expect(screen.getByText('unknown', {selector: 'button span'})).toBeVisible();
   });
 
   it('announces its visible controlled value when no custom trigger label is supplied', () => {
@@ -266,8 +299,8 @@ describe('Selector', () => {
     render(<LanguageExample />);
 
     const portugueseTrigger = screen
-        .getByText('Português', {selector: 'summary span'})
-        .closest('summary');
+        .getByText('Português', {selector: 'button span'})
+        .closest('button');
 
     expect(portugueseTrigger).toHaveAccessibleName('Português');
 
@@ -275,8 +308,8 @@ describe('Selector', () => {
     fireEvent.click(screen.getByRole('button', {name: 'English'}));
 
     const englishTrigger = screen
-        .getByText('English', {selector: 'summary span'})
-        .closest('summary');
+        .getByText('English', {selector: 'button span'})
+        .closest('button');
 
     expect(englishTrigger).toHaveAccessibleName('English');
   });
@@ -296,10 +329,11 @@ describe('Selector', () => {
         />,
     );
 
-    const trigger = screen.getByText('Português', {selector: 'summary span'}).parentElement;
+    const trigger = screen.getByText('Português', {selector: 'button span'}).parentElement;
 
     expect(trigger?.parentElement).toHaveClass(widthClass);
     expect(trigger).toHaveClass(heightClass);
+    fireEvent.click(trigger as HTMLElement);
     expect(screen.getByRole('list', {name: 'Idioma'})).not.toHaveClass('fixed');
   });
 });

@@ -24,7 +24,7 @@ const defaultArgs: NavbarPlaygroundArgs = {
 function getSelectorTriggers(label: string) {
   return screen
       .getAllByLabelText(label)
-      .filter((element) => element.tagName === 'SUMMARY');
+      .filter((element) => element.tagName === 'BUTTON');
 }
 
 describe('Navbar stories', () => {
@@ -93,7 +93,7 @@ describe('Navbar stories', () => {
     )).toBeVisible();
     const mobileSelector = within(mobileNavigation)
         .getAllByLabelText('Escolher idioma: Français')
-        .find((element) => element.tagName === 'SUMMARY');
+        .find((element) => element.tagName === 'BUTTON');
 
     expect(mobileSelector).toBeVisible();
     expect(within(mobileNavigation).getByRole(

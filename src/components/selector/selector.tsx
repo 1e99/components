@@ -1,4 +1,4 @@
-import {type ReactNode, useCallback, useEffect, useState} from 'react';
+import {type ReactNode, useEffect, useEffectEvent, useId, useRef, useState} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
 
 export type SelectorOption = {
@@ -38,7 +38,7 @@ export type SelectorProps<TOption extends SelectorOption = SelectorOption> =
   };
 
 const standardTriggerClassName =
-  'flex w-full cursor-pointer list-none select-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden';
+  'flex w-full cursor-pointer select-none items-center justify-between rounded-control border border-border-subtle py-control-y text-label font-semibold text-content-primary shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus';
 
 const optionClassName =
   'flex min-h-12 w-full select-none items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
@@ -60,12 +60,18 @@ function getNavigationLayout(density: SelectorDensity) {
 
 function SelectorTrigger<TOption extends SelectorOption>({
   densityClassName,
+  isOpen,
+  onClick,
+  optionListId,
   renderTrigger,
   selectedOption,
   triggerAriaLabel,
   value,
 }: {
   densityClassName: string;
+  isOpen: boolean;
+  onClick: () => void;
+  optionListId: string;
   renderTrigger?: (context: SelectorRenderTriggerContext<TOption>) => ReactNode;
   selectedOption: TOption | undefined;
   triggerAriaLabel?: string;
@@ -75,13 +81,20 @@ function SelectorTrigger<TOption extends SelectorOption>({
     selectedOption?.label ?? value;
 
   return (
-    <summary aria-label={triggerAriaLabel} className={`${standardTriggerClassName} ${densityClassName}`}>
+    <button
+      aria-controls={optionListId}
+      aria-expanded={isOpen}
+      aria-label={triggerAriaLabel}
+      className={`${standardTriggerClassName} ${densityClassName}`}
+      onClick={onClick}
+      type="button"
+    >
       <span>{triggerContent}</span>
       <LuChevronDown
         aria-hidden="true"
-        className="selector-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none group-open:rotate-180"
+        className={`selector-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
       />
-    </summary>
+    </button>
   );
 }
 
@@ -96,27 +109,32 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   value,
   whiteSurface = false,
 }: SelectorProps<TOption>) {
-  const [selectorElement, setSelectorElement] =
-    useState<HTMLDetailsElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectionRequest, setSelectionRequest] =
+    useState<{value: string} | null>(null);
+  const optionListId = useId();
+  const selectorReference = useRef<HTMLDivElement>(null);
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
   const surfaceClassName = whiteSurface ? 'bg-white' : 'bg-surface-raised';
 
   useEffect(() => {
-    if (!selectorElement) {
+    if (!isOpen) {
       return;
     }
 
     const closeWhenPointerStartsOutside = (event: PointerEvent) => {
+      const selectorElement = selectorReference.current;
+
       if (
-        !selectorElement.open ||
+        !selectorElement ||
         !(event.target instanceof Node) ||
         selectorElement.contains(event.target)
       ) {
         return;
       }
 
-      selectorElement.removeAttribute('open');
+      setIsOpen(false);
     };
 
     document.addEventListener('pointerdown', closeWhenPointerStartsOutside, true);
@@ -124,49 +142,64 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
     return () => {
       document.removeEventListener('pointerdown', closeWhenPointerStartsOutside, true);
     };
-  }, [selectorElement]);
+  }, [isOpen]);
 
-  const selectOption = useCallback((option: TOption) => {
-    selectorElement?.removeAttribute('open');
-    onValueChange(option.value);
-  }, [onValueChange, selectorElement]);
+  const notifyValueChange = useEffectEvent((nextValue: string) => {
+    onValueChange(nextValue);
+  });
+
+  useEffect(() => {
+    if (isOpen || selectionRequest === null) {
+      return;
+    }
+
+    notifyValueChange(selectionRequest.value);
+  }, [isOpen, selectionRequest]);
+
+  const selectOption = (nextValue: string) => {
+    setIsOpen(false);
+    setSelectionRequest({value: nextValue});
+  };
 
   return (
-    <details
-      ref={setSelectorElement}
-      className={`selector-disclosure group relative ${layout.wrapper}`}
-    >
+    <div ref={selectorReference} className={`selector-disclosure relative ${layout.wrapper}`}>
       <SelectorTrigger
         densityClassName={layout.trigger}
+        isOpen={isOpen}
+        onClick={() => setIsOpen((currentOpen) => !currentOpen)}
+        optionListId={optionListId}
         renderTrigger={renderTrigger}
         selectedOption={selectedOption}
         triggerAriaLabel={triggerAriaLabel}
         value={value}
       />
-      <ul
-        aria-label={label}
-        className={`mt-2 w-full overflow-hidden rounded-control border border-border-subtle ${surfaceClassName} p-1 shadow-float md:absolute md:top-full md:right-0 md:z-60 md:min-w-44`}
-      >
-        {options.map((option) => {
-          const isSelected = option.value === value;
-          const select = () => selectOption(option);
-          const optionContent = renderOption?.({isSelected, option, select}) ??
-            option.label;
+      {isOpen ? (
+        <ul
+          aria-label={label}
+          className={`mt-2 w-full overflow-hidden rounded-control border border-border-subtle ${surfaceClassName} p-1 shadow-float md:absolute md:top-full md:right-0 md:z-60 md:min-w-44`}
+          id={optionListId}
+        >
+          {options.map((option) => {
+            const isSelected = option.value === value;
+            const select = () => selectOption(option.value);
+            const optionContent =
+              renderOption?.({isSelected, option, select}) ?? option.label;
 
-          return (
-            <li key={option.value}>
-              <button
-                aria-pressed={isSelected}
-                className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
-                onClick={select}
-                type="button"
-              >
-                {optionContent}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </details>
+            return (
+              <li key={option.value}>
+                <button
+                  aria-pressed={isSelected}
+                  className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
+                  onClick={select}
+                  type="button"
+                >
+                  {optionContent}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
+    </div>
   );
 }
