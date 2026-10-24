@@ -1,4 +1,4 @@
-import {type ReactNode, useEffect, useRef} from 'react';
+import {type ReactNode, useCallback, useEffect, useState} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
 
 export type SelectorOption = {
@@ -42,10 +42,6 @@ const standardTriggerClassName =
 
 const optionClassName =
   'flex min-h-12 w-full select-none items-center rounded-control px-3 text-label font-semibold text-content-secondary transition-colors duration-200 ease-brand hover:bg-brand-cloud hover:text-content-primary focus-visible:outline-none focus-visible:shadow-focus';
-
-function closeSelectorDisclosure(element: HTMLElement) {
-  element.closest('details')?.removeAttribute('open');
-}
 
 function getNavigationLayout(density: SelectorDensity) {
   if (density === 'compact') {
@@ -100,36 +96,44 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   value,
   whiteSurface = false,
 }: SelectorProps<TOption>) {
-  const selectorReference = useRef<HTMLDetailsElement>(null);
+  const [selectorElement, setSelectorElement] =
+    useState<HTMLDetailsElement | null>(null);
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
   const surfaceClassName = whiteSurface ? 'bg-white' : 'bg-surface-raised';
 
   useEffect(() => {
-    const closeWhenPointerStartsOutside = (event: PointerEvent) => {
-      const selector = selectorReference.current;
+    if (!selectorElement) {
+      return;
+    }
 
+    const closeWhenPointerStartsOutside = (event: PointerEvent) => {
       if (
-        !selector?.open ||
+        !selectorElement.open ||
         !(event.target instanceof Node) ||
-        selector.contains(event.target)
+        selectorElement.contains(event.target)
       ) {
         return;
       }
 
-      selector.removeAttribute('open');
+      selectorElement.removeAttribute('open');
     };
 
-    document.addEventListener('pointerdown', closeWhenPointerStartsOutside);
+    document.addEventListener('pointerdown', closeWhenPointerStartsOutside, true);
 
     return () => {
-      document.removeEventListener('pointerdown', closeWhenPointerStartsOutside);
+      document.removeEventListener('pointerdown', closeWhenPointerStartsOutside, true);
     };
-  }, []);
+  }, [selectorElement]);
+
+  const selectOption = useCallback((option: TOption) => {
+    selectorElement?.removeAttribute('open');
+    onValueChange(option.value);
+  }, [onValueChange, selectorElement]);
 
   return (
     <details
-      ref={selectorReference}
+      ref={setSelectorElement}
       className={`selector-disclosure group relative ${layout.wrapper}`}
     >
       <SelectorTrigger
@@ -145,7 +149,7 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
       >
         {options.map((option) => {
           const isSelected = option.value === value;
-          const select = () => onValueChange(option.value);
+          const select = () => selectOption(option);
           const optionContent = renderOption?.({isSelected, option, select}) ??
             option.label;
 
@@ -154,10 +158,7 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
               <button
                 aria-pressed={isSelected}
                 className={`${optionClassName} text-left ${isSelected ? 'bg-brand-cloud text-content-primary' : ''}`}
-                onClick={(event) => {
-                  closeSelectorDisclosure(event.currentTarget);
-                  select();
-                }}
+                onClick={select}
                 type="button"
               >
                 {optionContent}

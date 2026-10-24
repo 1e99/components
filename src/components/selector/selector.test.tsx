@@ -77,6 +77,33 @@ describe('Selector', () => {
     expect(disclosure).not.toHaveAttribute('open');
   });
 
+  it('closes an open selector when an outside target stops pointer propagation', () => {
+    render(
+        <>
+          <button onPointerDown={(event) => event.stopPropagation()} type="button">
+            Outside
+          </button>
+          <Selector
+            label="Idioma"
+            onValueChange={() => undefined}
+            options={languageOptions}
+            triggerAriaLabel="Idioma: Português"
+            value="pt"
+          />
+        </>,
+    );
+
+    const trigger = screen.getByLabelText('Idioma: Português');
+    const disclosure = trigger.parentElement;
+
+    fireEvent.click(trigger);
+    expect(disclosure).toHaveAttribute('open');
+
+    fireEvent.pointerDown(screen.getByRole('button', {name: 'Outside'}));
+
+    expect(disclosure).not.toHaveAttribute('open');
+  });
+
   it('closes the selector before notifying a consumer of a new value', () => {
     let disclosure: HTMLElement | null = null;
     let wasOpenWhenValueChanged: boolean | undefined;
@@ -98,6 +125,41 @@ describe('Selector', () => {
 
     fireEvent.click(trigger);
     fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    expect(wasOpenWhenValueChanged).toBe(false);
+  });
+
+  it('closes the selector before a custom option notifies a consumer', () => {
+    let disclosure: HTMLElement | null = null;
+    let wasOpenWhenValueChanged: boolean | undefined;
+
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => {
+            wasOpenWhenValueChanged = disclosure?.hasAttribute('open');
+          }}
+          options={languageOptions}
+          renderOption={({option, select}) => (
+            <span
+              onClick={(event) => {
+                event.stopPropagation();
+                select();
+              }}
+            >
+              {option.label}
+            </span>
+          )}
+          triggerAriaLabel="Idioma: Português"
+          value="pt"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Idioma: Português');
+    disclosure = trigger.parentElement;
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByText('English', {selector: 'span'}));
 
     expect(wasOpenWhenValueChanged).toBe(false);
   });
