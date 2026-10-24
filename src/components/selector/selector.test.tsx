@@ -162,6 +162,34 @@ describe('Selector', () => {
     expect(optionListWasRenderedWhenValueChanged).toBe(false);
   });
 
+  it('notifies a selected value only once after later outside interactions', async () => {
+    const onValueChange = vi.fn();
+
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={onValueChange}
+          options={languageOptions}
+          triggerAriaLabel="Idioma: Português"
+          value="pt"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Idioma: Português');
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole('button', {name: 'English'}));
+
+    await waitFor(() => {
+      expect(onValueChange).toHaveBeenCalledTimes(1);
+    });
+
+    fireEvent.click(trigger);
+    fireEvent.pointerDown(document.body);
+
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+  });
+
   it('closes the selector before a custom option notifies a consumer', () => {
     let trigger: HTMLElement | null = null;
     let wasOpenWhenValueChanged: boolean | undefined;

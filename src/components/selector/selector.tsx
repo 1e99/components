@@ -1,4 +1,4 @@
-import {type ReactNode, useEffect, useEffectEvent, useId, useRef, useState} from 'react';
+import {type ReactNode, useEffect, useId, useRef, useState} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
 
 export type SelectorOption = {
@@ -113,6 +113,8 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   const [selectionRequest, setSelectionRequest] =
     useState<{value: string} | null>(null);
   const optionListId = useId();
+  const notifiedSelectionReference = useRef<{value: string} | null>(null);
+  const onValueChangeReference = useRef(onValueChange);
   const selectorReference = useRef<HTMLDivElement>(null);
   const selectedOption = options.find((option) => option.value === value);
   const layout = getNavigationLayout(density);
@@ -144,16 +146,21 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
     };
   }, [isOpen]);
 
-  const notifyValueChange = useEffectEvent((nextValue: string) => {
-    onValueChange(nextValue);
-  });
+  useEffect(() => {
+    onValueChangeReference.current = onValueChange;
+  }, [onValueChange]);
 
   useEffect(() => {
-    if (isOpen || selectionRequest === null) {
+    if (
+      isOpen ||
+      selectionRequest === null ||
+      selectionRequest === notifiedSelectionReference.current
+    ) {
       return;
     }
 
-    notifyValueChange(selectionRequest.value);
+    notifiedSelectionReference.current = selectionRequest;
+    onValueChangeReference.current(selectionRequest.value);
   }, [isOpen, selectionRequest]);
 
   const selectOption = (nextValue: string) => {
