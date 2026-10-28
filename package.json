@@ -1,6 +1,6 @@
 {
   "name": "@1e99/components",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Reusable React components built with Tailwind CSS.",
   "repository": {
     "type": "git",
