@@ -110,6 +110,10 @@ cliente:
 />
 ```
 
+`getInitials(value)` é um utilitário puro exportado pelo pacote. Ele retorna
+até duas iniciais (primeira e última palavras), normaliza espaços e usa `"1"`
+quando não há identidade disponível.
+
 `Selector` é controlado: `value` determina a opção visível e
 `onValueChange` informa uma nova escolha. As opções exigem somente `value` e
 `label`, mas podem ser estendidas com outros campos e apresentadas por
@@ -124,13 +128,15 @@ pnpm lint:fix
 pnpm format
 pnpm storybook
 pnpm test
+pnpm test:utils
 pnpm test:stories
 pnpm build
 pnpm build-storybook
 pnpm pack:check
 ```
 
-Husky executa `pnpm lint` e `pnpm test` antes de cada commit. As stories são
+Husky executa `pnpm lint` e `pnpm test` antes de cada commit. Utilitários puros
+são verificados pelo Jest com `pnpm test:utils`. As stories são
 verificadas em Chromium por `pnpm test:stories`; em uma máquina Linux nova,
 instale as dependências uma vez:
 
