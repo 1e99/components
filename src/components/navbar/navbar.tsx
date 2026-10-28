@@ -56,7 +56,9 @@ export function Navbar({
   renderLink,
   width = 'content',
 }: NavbarProps) {
-  const mobileNavigationId = `navbar-mobile-navigation-${useId()}`;
+  const mobileNavigationReference = useId();
+  const mobileNavigationId = `navbar-mobile-navigation-${mobileNavigationReference}`;
+  const mobileNavigationAnchorName = `--navbar-mobile-menu-trigger-${mobileNavigationReference.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
   const linkClassName = [
     baseLinkClassName,
     linkWeight === 'bold' ? 'font-bold' : 'font-semibold',
@@ -100,9 +102,10 @@ export function Navbar({
             <button
               aria-controls={mobileNavigationId}
               aria-label={mobileNavigation.menuLabel}
-              className="flex size-12 cursor-pointer items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus [anchor-name:--navbar-mobile-menu-trigger]"
+              className="flex size-12 cursor-pointer items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus"
               popoverTarget={mobileNavigationId}
               popoverTargetAction="toggle"
+              style={{anchorName: mobileNavigationAnchorName}}
               type="button"
             >
               <span className="sr-only">{mobileNavigation.menuLabel}</span>
@@ -110,9 +113,10 @@ export function Navbar({
             </button>
             <nav
               aria-label={mobileNavigation.navigationLabel}
-              className="fixed top-[4.5rem] right-[1.25rem] m-0 w-72 rounded-card border border-border-subtle bg-surface-raised p-3 shadow-float [position-anchor:--navbar-mobile-menu-trigger] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:absolute [@supports(position-anchor:--navbar-mobile-menu-trigger)]:top-[calc(anchor(bottom)+0.5rem)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:right-auto [@supports(position-anchor:--navbar-mobile-menu-trigger)]:left-[anchor(right)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:-translate-x-full"
+              className="fixed top-[4.5rem] right-[1.25rem] m-0 w-72 rounded-card border border-border-subtle bg-surface-raised p-3 shadow-float [@supports(position-anchor:--navbar-mobile-menu-trigger)]:absolute [@supports(position-anchor:--navbar-mobile-menu-trigger)]:top-[calc(anchor(bottom)+0.5rem)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:right-auto [@supports(position-anchor:--navbar-mobile-menu-trigger)]:left-[anchor(right)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:-translate-x-full"
               id={mobileNavigationId}
               popover="auto"
+              style={{positionAnchor: mobileNavigationAnchorName}}
             >
               {renderLinks(mobileLinkClassName)}
               {mobileNavigation.actions ? (

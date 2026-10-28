@@ -159,7 +159,6 @@ describe('Navbar', () => {
         'w-72',
         'bg-surface-raised',
         'shadow-float',
-        '[position-anchor:--navbar-mobile-menu-trigger]',
         '[@supports(position-anchor:--navbar-mobile-menu-trigger)]:absolute',
         '[@supports(position-anchor:--navbar-mobile-menu-trigger)]:left-[anchor(right)]',
     );
@@ -243,6 +242,19 @@ describe('Navbar', () => {
         secondNavigation.getAttribute('id'),
     );
     expect(firstNavigation.id).not.toBe(secondNavigation.id);
+
+    const firstAnchorName = firstTrigger.style.getPropertyValue('anchor-name');
+    const secondAnchorName = secondTrigger.style.getPropertyValue('anchor-name');
+
+    expect(firstAnchorName).toBeTruthy();
+    expect(secondAnchorName).toBeTruthy();
+    expect(firstAnchorName).not.toBe(secondAnchorName);
+    expect(firstNavigation.style.getPropertyValue('position-anchor')).toBe(
+        firstAnchorName,
+    );
+    expect(secondNavigation.style.getPropertyValue('position-anchor')).toBe(
+        secondAnchorName,
+    );
   });
 
   it('applies the wide and underlined variants without rendering mobile navigation by default', () => {
