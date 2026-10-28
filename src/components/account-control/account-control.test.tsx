@@ -47,7 +47,7 @@ describe('AccountControl', () => {
     );
   });
 
-  it('uses a circular initials trigger and shows the full email in the menu', async () => {
+  it('uses a responsive navbar account button and truncates a long email in the menu', async () => {
     const user = userEvent.setup();
     const email = 'ada.lovelace.with.a.very.long.email@example.com';
 
@@ -63,14 +63,39 @@ describe('AccountControl', () => {
       name: 'AL Account menu for Ada Lovelace',
     });
 
-    expect(trigger).toHaveClass('size-10', 'rounded-full');
+    expect(trigger).toHaveClass(
+        'min-h-12',
+        'w-full',
+        'rounded-control',
+        'border',
+        'bg-surface-raised',
+        'px-3',
+        'md:size-10',
+        'md:rounded-full',
+        'md:p-1',
+        'md:bg-white',
+    );
     expect(trigger).toHaveTextContent('AL');
-    expect(trigger).not.toHaveTextContent('Account');
+    expect(trigger).toHaveTextContent('Account');
+    expect(trigger.parentElement).toHaveClass('w-full', 'md:w-auto');
+    expect(screen.getByText('AL')).toHaveClass(
+        'size-8',
+        'rounded-full',
+        'bg-brand-yellow',
+    );
+    expect(screen.getByText('Account')).toHaveClass('md:hidden');
 
     await user.click(trigger);
 
-    expect(screen.getByText(email)).toHaveClass('break-all');
-    expect(screen.getByText(email)).not.toHaveClass('truncate');
+    expect(screen.getByRole('list', {name: 'Account'})).toHaveClass(
+        'md:absolute',
+        'md:top-full',
+        'md:right-0',
+        'md:min-w-44',
+    );
+    expect(screen.getByRole('list', {name: 'Account'})).not.toHaveClass('absolute');
+    expect(screen.getByText(email)).toHaveClass('truncate');
+    expect(screen.getByText(email)).not.toHaveClass('break-all');
   });
 
   it('uses the fallback identity when the authentication profile is incomplete', async () => {
