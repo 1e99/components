@@ -110,6 +110,18 @@ cliente:
 />
 ```
 
+Use `children` para inserir conteúdo ou ações específicas do produto entre a
+identidade e a saída. O conteúdo não é uma opção selecionável; o consumidor
+continua responsável pelo estado, efeitos e traduções dessas ações:
+
+```tsx
+<AccountControl {...accountProps}>
+  <button onClick={() => clearLocalDrafts()} type="button">
+    Limpar dados locais
+  </button>
+</AccountControl>
+```
+
 `getInitials(value)` é um utilitário puro exportado pelo pacote. Ele retorna
 até duas iniciais (primeira e última palavras), normaliza espaços e usa `"1"`
 quando não há identidade disponível.
