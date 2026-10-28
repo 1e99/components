@@ -1,6 +1,5 @@
 import {describe, expect, it} from 'vitest';
 import {render, screen, within} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import * as components from '../../index';
 import {Navbar} from '../../index';
 
@@ -140,7 +139,7 @@ describe('Navbar', () => {
 
     expect(menuIcon?.querySelectorAll('line')).toHaveLength(3);
     expect(menuIcon).toHaveAttribute('stroke-linejoin', 'round');
-    expect(menuTrigger.closest('details')).toHaveClass('relative', 'md:hidden');
+    expect(menuTrigger.parentElement).toHaveClass('relative', 'md:hidden');
     expect(menuTrigger).toHaveClass(
         'size-12',
         'bg-action-primary',
@@ -154,12 +153,15 @@ describe('Navbar', () => {
       name: 'Mobile primary navigation',
     });
     expect(mobileNavigation).toHaveClass(
-        'absolute',
-        'top-14',
-        'right-0',
+        'fixed',
+        'top-[4.5rem]',
+        'right-[1.25rem]',
         'w-72',
         'bg-surface-raised',
         'shadow-float',
+        '[position-anchor:--navbar-mobile-menu-trigger]',
+        '[@supports(position-anchor:--navbar-mobile-menu-trigger)]:absolute',
+        '[@supports(position-anchor:--navbar-mobile-menu-trigger)]:left-[anchor(right)]',
     );
     expect(within(mobileNavigation).getByRole('link', {name: 'Apps'})).toHaveAttribute(
         'href',
@@ -173,9 +175,7 @@ describe('Navbar', () => {
     expect(screen.getByRole('button', {name: 'Mobile sign in'})).toBeInTheDocument();
   });
 
-  it('opens the native mobile disclosure', async () => {
-    const user = userEvent.setup();
-
+  it('wires the mobile menu to an auto popover', () => {
     render(
         <Navbar
           brand={<a href="/">1e99</a>}
@@ -188,10 +188,61 @@ describe('Navbar', () => {
         />,
     );
 
-    const menu = screen.getByLabelText('Open navigation menu');
-    await user.click(menu);
+    const menuTrigger = screen.getByLabelText('Open navigation menu');
+    const mobileNavigation = screen.getByRole('navigation', {
+      name: 'Mobile primary navigation',
+    });
+    const targetId = menuTrigger.getAttribute('popovertarget');
 
-    expect(menu.closest('details')).toHaveAttribute('open');
+    expect(menuTrigger).toHaveAttribute('popovertargetaction', 'toggle');
+    expect(targetId).toBeTruthy();
+    expect(mobileNavigation).toHaveAttribute('id', targetId);
+    expect(mobileNavigation).toHaveAttribute('popover', 'auto');
+    expect(menuTrigger.closest('details')).not.toBeInTheDocument();
+  });
+
+  it('gives each mobile menu an independent popover target', () => {
+    render(
+        <>
+          <Navbar
+            brand={<a href="/">First</a>}
+            items={[{href: '/first', label: 'First item'}]}
+            mobileNavigation={{
+              menuLabel: 'Open first navigation menu',
+              navigationLabel: 'First mobile navigation',
+            }}
+            navigationLabel="First navigation"
+          />
+          <Navbar
+            brand={<a href="/">Second</a>}
+            items={[{href: '/second', label: 'Second item'}]}
+            mobileNavigation={{
+              menuLabel: 'Open second navigation menu',
+              navigationLabel: 'Second mobile navigation',
+            }}
+            navigationLabel="Second navigation"
+          />
+        </>,
+    );
+
+    const firstTrigger = screen.getByLabelText('Open first navigation menu');
+    const secondTrigger = screen.getByLabelText('Open second navigation menu');
+    const firstNavigation = screen.getByRole('navigation', {
+      name: 'First mobile navigation',
+    });
+    const secondNavigation = screen.getByRole('navigation', {
+      name: 'Second mobile navigation',
+    });
+
+    expect(firstTrigger).toHaveAttribute(
+        'popovertarget',
+        firstNavigation.getAttribute('id'),
+    );
+    expect(secondTrigger).toHaveAttribute(
+        'popovertarget',
+        secondNavigation.getAttribute('id'),
+    );
+    expect(firstNavigation.id).not.toBe(secondNavigation.id);
   });
 
   it('applies the wide and underlined variants without rendering mobile navigation by default', () => {

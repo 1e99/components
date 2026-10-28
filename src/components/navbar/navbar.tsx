@@ -1,4 +1,4 @@
-import {Fragment, type ReactNode} from 'react';
+import {Fragment, type ReactNode, useId} from 'react';
 import {LuMenu} from 'react-icons/lu';
 
 export type NavbarItem = {
@@ -56,6 +56,7 @@ export function Navbar({
   renderLink,
   width = 'content',
 }: NavbarProps) {
+  const mobileNavigationId = `navbar-mobile-navigation-${useId()}`;
   const linkClassName = [
     baseLinkClassName,
     linkWeight === 'bold' ? 'font-bold' : 'font-semibold',
@@ -95,17 +96,23 @@ export function Navbar({
         </nav>
         {actions}
         {mobileNavigation ? (
-          <details className="relative md:hidden">
-            <summary
+          <div className="relative md:hidden">
+            <button
+              aria-controls={mobileNavigationId}
               aria-label={mobileNavigation.menuLabel}
-              className="flex size-12 cursor-pointer list-none items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus [&::-webkit-details-marker]:hidden"
+              className="flex size-12 cursor-pointer items-center justify-center rounded-control bg-action-primary text-content-inverse shadow-card transition-[translate,scale,background-color] duration-200 ease-brand active:scale-[0.97] focus-visible:outline-none focus-visible:shadow-focus [anchor-name:--navbar-mobile-menu-trigger]"
+              popoverTarget={mobileNavigationId}
+              popoverTargetAction="toggle"
+              type="button"
             >
               <span className="sr-only">{mobileNavigation.menuLabel}</span>
               <LuMenu aria-hidden="true" className="size-6" />
-            </summary>
+            </button>
             <nav
               aria-label={mobileNavigation.navigationLabel}
-              className="absolute top-14 right-0 w-72 rounded-card border border-border-subtle bg-surface-raised p-3 shadow-float"
+              className="fixed top-[4.5rem] right-[1.25rem] m-0 w-72 rounded-card border border-border-subtle bg-surface-raised p-3 shadow-float [position-anchor:--navbar-mobile-menu-trigger] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:absolute [@supports(position-anchor:--navbar-mobile-menu-trigger)]:top-[calc(anchor(bottom)+0.5rem)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:right-auto [@supports(position-anchor:--navbar-mobile-menu-trigger)]:left-[anchor(right)] [@supports(position-anchor:--navbar-mobile-menu-trigger)]:-translate-x-full"
+              id={mobileNavigationId}
+              popover="auto"
             >
               {renderLinks(mobileLinkClassName)}
               {mobileNavigation.actions ? (
@@ -114,7 +121,7 @@ export function Navbar({
                 </div>
               ) : null}
             </nav>
-          </details>
+          </div>
         ) : null}
       </div>
     </header>

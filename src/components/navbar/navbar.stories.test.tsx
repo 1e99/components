@@ -1,4 +1,4 @@
-import {fireEvent, render, screen, within} from '@testing-library/react';
+import {render, screen, within} from '@testing-library/react';
 import {describe, expect, it} from 'vitest';
 import {NavbarPlayground, type NavbarPlaygroundArgs} from './navbar.stories';
 
@@ -49,11 +49,10 @@ describe('Navbar stories', () => {
     expect(screen.queryByRole('button', {name: 'Entrar com Google'})).not.toBeInTheDocument();
     expect(screen.queryByLabelText('Idioma')).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText('Abrir menu de navegação'));
-
-    const mobileNavigation = screen.getByRole('navigation', {
-      name: 'Navegação principal móvel',
-    });
+    const mobileNavigation = screen.getByLabelText(
+        'Navegação principal móvel',
+        {selector: 'nav'},
+    );
 
     expect(within(mobileNavigation).queryByRole(
         'button',
@@ -77,28 +76,31 @@ describe('Navbar stories', () => {
         />,
     );
 
-    expect(screen.getAllByRole('link', {name: 'Biblioteca'})).toHaveLength(2);
+    expect(screen.getAllByRole('link', {name: 'Biblioteca', hidden: true})).toHaveLength(2);
     expect(getSelectorTriggers('Escolher idioma: Français')).toHaveLength(2);
-    expect(screen.getAllByRole('button', {name: 'Continuar com Google'})).toHaveLength(2);
+    expect(screen.getAllByRole(
+        'button',
+        {name: 'Continuar com Google', hidden: true},
+    )).toHaveLength(2);
 
-    fireEvent.click(screen.getByLabelText('Abrir menu de navegação'));
-
-    const mobileNavigation = screen.getByRole('navigation', {
-      name: 'Navegação personalizada móvel',
-    });
+    const mobileNavigation = screen.getByLabelText(
+        'Navegação personalizada móvel',
+        {selector: 'nav'},
+    );
 
     expect(within(mobileNavigation).getByRole(
         'link',
-        {name: 'Biblioteca'},
-    )).toBeVisible();
-    const mobileSelector = within(mobileNavigation)
-        .getAllByLabelText('Escolher idioma: Français')
-        .find((element) => element.tagName === 'BUTTON');
+        {name: 'Biblioteca', hidden: true},
+    )).toBeInTheDocument();
+    const mobileSelector = within(mobileNavigation).getByRole(
+        'button',
+        {name: 'Escolher idioma: Français', hidden: true},
+    );
 
-    expect(mobileSelector).toBeVisible();
+    expect(mobileSelector).toBeInTheDocument();
     expect(within(mobileNavigation).getByRole(
         'button',
-        {name: 'Continuar com Google'},
-    )).toBeVisible();
+        {name: 'Continuar com Google', hidden: true},
+    )).toBeInTheDocument();
   });
 });
