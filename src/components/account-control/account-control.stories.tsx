@@ -11,8 +11,13 @@ function AccountControlPreview(props: AccountControlStoryArgs) {
   const [signOutRequested, setSignOutRequested] = useState(false);
 
   return (
-    <div className="w-72">
-      <AccountControl {...props} onSignOut={() => setSignOutRequested(true)} />
+    <div className="w-72 rounded-card bg-surface-page p-4">
+      <div className="flex justify-end">
+        <AccountControl
+          {...props}
+          onSignOut={() => setSignOutRequested(true)}
+        />
+      </div>
       {signOutRequested ? (
         <p className="mt-3 text-label text-content-secondary" role="status">
           Sign-out requested

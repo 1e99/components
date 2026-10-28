@@ -17,6 +17,7 @@ const defaultArgs: NavbarPlaygroundArgs = {
     {label: 'English', value: 'en'},
   ],
   showGoogleSignIn: true,
+  showAccountControl: false,
   showMobileNavigation: true,
   showSelector: true,
 };
@@ -102,5 +103,25 @@ describe('Navbar stories', () => {
         'button',
         {name: 'Continuar com Google', hidden: true},
     )).toBeInTheDocument();
+  });
+
+  it('includes the account control in authenticated mobile navigation', () => {
+    render(
+        <NavbarPlayground
+          {...defaultArgs}
+          showAccountControl
+          showGoogleSignIn={false}
+        />,
+    );
+
+    const mobileNavigation = screen.getByLabelText(
+        'Navegação principal móvel',
+        {selector: 'nav'},
+    );
+
+    expect(within(mobileNavigation).getByRole('button', {
+      name: 'AL Account menu for Ada Lovelace',
+      hidden: true,
+    })).toBeInTheDocument();
   });
 });

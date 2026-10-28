@@ -13,6 +13,8 @@
 @theme inline {
   --color-brand-cloud: #f3f8fa;
   --color-brand-navy: #071d35;
+  --color-brand-navy-dark: #041323;
+  --color-brand-yellow: #ffc928;
   --color-action-primary: #0e5784;
   --color-action-primary-hover: #071d35;
   --color-border-subtle: color-mix(in srgb, #071d35 14%, transparent);

@@ -1,5 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+import {AccountControl} from '../account-control/account-control';
 import {GoogleSignInButton} from '../google-sign-in-button/google-sign-in-button';
 import {Selector, type SelectorOption} from '../selector/selector';
 import {Navbar, type NavbarProps} from './navbar';
@@ -23,6 +24,7 @@ export type NavbarPlaygroundArgs = Omit<
   mobileNavigationLabel: string;
   selectorLabel: string;
   selectorOptions: readonly NavbarSelectorOption[];
+  showAccountControl: boolean;
   showGoogleSignIn: boolean;
   showMobileNavigation: boolean;
   showSelector: boolean;
@@ -57,6 +59,7 @@ function NavbarControls({
   onValueChange,
   selectorLabel,
   selectorOptions,
+  showAccountControl,
   showGoogleSignIn,
   showSelector,
   value,
@@ -65,6 +68,7 @@ function NavbarControls({
   onValueChange: (value: string) => void;
   selectorLabel: string;
   selectorOptions: readonly NavbarSelectorOption[];
+  showAccountControl: boolean;
   showGoogleSignIn: boolean;
   showSelector: boolean;
   value: string;
@@ -89,6 +93,18 @@ function NavbarControls({
       {showGoogleSignIn ? (
         <GoogleSignInButton label={googleSignInLabel} />
       ) : null}
+      {showAccountControl ? (
+        <AccountControl
+          email="ada@example.com"
+          fallbackIdentity="Workspace account"
+          menuAriaLabel="Account menu for Ada Lovelace"
+          menuText="Account"
+          name="Ada Lovelace"
+          onSignOut={() => undefined}
+          signOutAriaLabel="Sign out of this account"
+          signOutText="Sign out"
+        />
+      ) : null}
     </>
   );
 }
@@ -100,6 +116,7 @@ export function NavbarPlayground({
   mobileNavigationLabel,
   selectorLabel,
   selectorOptions,
+  showAccountControl,
   showGoogleSignIn,
   showMobileNavigation,
   showSelector,
@@ -112,7 +129,7 @@ export function NavbarPlayground({
   const value = selectorValueIsAvailable ?
     selectedValue : selectorOptions[0]?.value ?? '';
   const hasSelector = showSelector && selectorOptions.length > 0;
-  const hasActions = hasSelector || showGoogleSignIn;
+  const hasActions = hasSelector || showGoogleSignIn || showAccountControl;
 
   const controls = (
     <NavbarControls
@@ -120,6 +137,7 @@ export function NavbarPlayground({
       onValueChange={setSelectedValue}
       selectorLabel={selectorLabel}
       selectorOptions={selectorOptions}
+      showAccountControl={showAccountControl}
       showGoogleSignIn={showGoogleSignIn}
       showSelector={hasSelector}
       value={value}
@@ -157,6 +175,7 @@ const meta = {
     navigationLabel: 'Navegação principal',
     selectorLabel: 'Idioma',
     selectorOptions: defaultSelectorOptions,
+    showAccountControl: false,
     showGoogleSignIn: true,
     showMobileNavigation: true,
     showSelector: true,
@@ -198,5 +217,12 @@ export const WideNavigation: Story = {
     linkWeight: 'bold',
     navigationLabel: 'Navegação de página',
     width: 'wide',
+  },
+};
+
+export const AuthenticatedMobileNavigation: Story = {
+  args: {
+    showAccountControl: true,
+    showGoogleSignIn: false,
   },
 };
