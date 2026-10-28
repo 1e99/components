@@ -21,7 +21,9 @@ export type SelectorRenderTriggerContext<TOption extends SelectorOption> = {
 
 type SelectorBaseProps = {
   label: string;
+  showTriggerIndicator?: boolean;
   triggerAriaLabel?: string;
+  triggerClassName?: string;
   value: string;
 };
 
@@ -65,7 +67,9 @@ function SelectorTrigger<TOption extends SelectorOption>({
   optionListId,
   renderTrigger,
   selectedOption,
+  showTriggerIndicator,
   triggerAriaLabel,
+  triggerClassName,
   value,
 }: {
   densityClassName: string;
@@ -74,7 +78,9 @@ function SelectorTrigger<TOption extends SelectorOption>({
   optionListId: string;
   renderTrigger?: (context: SelectorRenderTriggerContext<TOption>) => ReactNode;
   selectedOption: TOption | undefined;
+  showTriggerIndicator: boolean;
   triggerAriaLabel?: string;
+  triggerClassName?: string;
   value: string;
 }) {
   const triggerContent = renderTrigger?.({selectedOption, value}) ??
@@ -85,15 +91,17 @@ function SelectorTrigger<TOption extends SelectorOption>({
       aria-controls={optionListId}
       aria-expanded={isOpen}
       aria-label={triggerAriaLabel}
-      className={`${standardTriggerClassName} ${densityClassName}`}
+      className={triggerClassName ?? `${standardTriggerClassName} ${densityClassName}`}
       onClick={onClick}
       type="button"
     >
       <span>{triggerContent}</span>
-      <LuChevronDown
-        aria-hidden="true"
-        className={`selector-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
-      />
+      {showTriggerIndicator ? (
+        <LuChevronDown
+          aria-hidden="true"
+          className={`selector-disclosure-arrow size-5 shrink-0 text-content-secondary transition-transform duration-200 ease-brand motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
+        />
+      ) : null}
     </button>
   );
 }
@@ -105,7 +113,9 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
   options,
   renderOption,
   renderTrigger,
+  showTriggerIndicator = true,
   triggerAriaLabel,
+  triggerClassName,
   value,
   whiteSurface = false,
 }: SelectorProps<TOption>) {
@@ -177,7 +187,9 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
         optionListId={optionListId}
         renderTrigger={renderTrigger}
         selectedOption={selectedOption}
+        showTriggerIndicator={showTriggerIndicator}
         triggerAriaLabel={triggerAriaLabel}
+        triggerClassName={triggerClassName}
         value={value}
       />
       {isOpen ? (

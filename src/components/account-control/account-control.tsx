@@ -44,14 +44,14 @@ export function AccountControl({
       renderOption={({option}) => option.value === 'account' ? (
         <span data-account-identity className="flex min-w-0 flex-col items-start py-1">
           <span
-            className="w-full truncate text-ui font-semibold text-content-primary"
+            className="w-full break-words text-ui font-semibold text-content-primary"
             title={identity}
           >
             {identity}
           </span>
           {showEmail ? (
             <span
-              className="mt-1 w-full truncate text-label text-content-secondary"
+              className="mt-1 w-full break-all text-label text-content-secondary"
               title={email ?? undefined}
             >
               {email}
@@ -66,17 +66,11 @@ export function AccountControl({
         </span>
       )}
       renderTrigger={() => (
-        <span className="flex min-w-0 items-center gap-3">
-          <span
-            aria-hidden="true"
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-yellow font-data text-label font-semibold text-brand-navy-dark"
-          >
-            {initials}
-          </span>
-          <span className="text-label font-semibold md:hidden">{menuText}</span>
-        </span>
+        <span aria-hidden="true">{initials}</span>
       )}
+      showTriggerIndicator={false}
       triggerAriaLabel={`${initials} ${menuAriaLabel}`}
+      triggerClassName="flex size-10 cursor-pointer select-none items-center justify-center rounded-full bg-brand-yellow font-data text-label font-semibold text-brand-navy-dark transition-colors duration-200 ease-brand hover:bg-brand-yellow/85 focus-visible:outline-none focus-visible:shadow-focus"
       value="account"
     />
   );

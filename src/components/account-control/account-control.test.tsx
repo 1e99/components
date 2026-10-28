@@ -47,6 +47,32 @@ describe('AccountControl', () => {
     );
   });
 
+  it('uses a circular initials trigger and shows the full email in the menu', async () => {
+    const user = userEvent.setup();
+    const email = 'ada.lovelace.with.a.very.long.email@example.com';
+
+    render(
+        <AccountControl
+          {...defaultProps}
+          email={email}
+          name="Ada Lovelace"
+        />,
+    );
+
+    const trigger = screen.getByRole('button', {
+      name: 'AL Account menu for Ada Lovelace',
+    });
+
+    expect(trigger).toHaveClass('size-10', 'rounded-full');
+    expect(trigger).toHaveTextContent('AL');
+    expect(trigger).not.toHaveTextContent('Account');
+
+    await user.click(trigger);
+
+    expect(screen.getByText(email)).toHaveClass('break-all');
+    expect(screen.getByText(email)).not.toHaveClass('truncate');
+  });
+
   it('uses the fallback identity when the authentication profile is incomplete', async () => {
     const user = userEvent.setup();
 
