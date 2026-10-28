@@ -30,11 +30,11 @@ describe('AccountControl', () => {
     );
 
     expect(screen.getByRole('button', {
-      name: 'Account menu for Ada Lovelace',
+      name: 'AL Account menu for Ada Lovelace',
     })).toHaveTextContent('AL');
 
     await user.click(screen.getByRole('button', {
-      name: 'Account menu for Ada Lovelace',
+      name: 'AL Account menu for Ada Lovelace',
     }));
 
     expect(screen.getByText('Ada Lovelace')).toHaveAttribute(
@@ -53,7 +53,7 @@ describe('AccountControl', () => {
     render(<AccountControl {...defaultProps} />);
 
     await user.click(screen.getByRole('button', {
-      name: 'Account menu for Ada Lovelace',
+      name: 'WA Account menu for Ada Lovelace',
     }));
 
     expect(screen.getByText('Workspace account')).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe('AccountControl', () => {
     render(<AccountControl {...defaultProps} onSignOut={onSignOut} />);
 
     await user.click(screen.getByRole('button', {
-      name: 'Account menu for Ada Lovelace',
+      name: 'WA Account menu for Ada Lovelace',
     }));
     await user.click(screen.getByRole('button', {
       name: 'Sign out of this account',

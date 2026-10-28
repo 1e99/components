@@ -24,6 +24,7 @@ export function AccountControl({
   signOutText,
 }: AccountControlProps) {
   const identity = name || email || fallbackIdentity;
+  const initials = getInitials(identity);
   const showEmail = Boolean(email && email !== identity);
   const options = [
     {label: identity, value: 'account'},
@@ -69,12 +70,12 @@ export function AccountControl({
             aria-hidden="true"
             className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-yellow font-data text-label font-semibold text-brand-navy-dark"
           >
-            {getInitials(identity)}
+            {initials}
           </span>
           <span className="text-label font-semibold md:hidden">{menuText}</span>
         </span>
       )}
-      triggerAriaLabel={menuAriaLabel}
+      triggerAriaLabel={`${initials} ${menuAriaLabel}`}
       value="account"
     />
   );
