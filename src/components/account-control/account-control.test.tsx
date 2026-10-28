@@ -127,6 +127,44 @@ describe('AccountControl', () => {
     })).toBeInTheDocument();
   });
 
+  it('renders consumer menu content before sign out without selecting it', async () => {
+    const onClearData = vi.fn();
+    const onSignOut = vi.fn();
+    const user = userEvent.setup();
+
+    render(
+        <AccountControl
+          {...defaultProps}
+          email="ada@example.com"
+          name="Ada Lovelace"
+          onSignOut={onSignOut}
+        >
+          <button onClick={onClearData} type="button">Clear local data</button>
+        </AccountControl>,
+    );
+
+    await user.click(screen.getByRole('button', {
+      name: 'AL Account menu for Ada Lovelace',
+    }));
+
+    const identity = screen.getByText('Ada Lovelace');
+    const clearData = screen.getByRole('button', {name: 'Clear local data'});
+    const signOut = screen.getByRole('button', {
+      name: 'Sign out of this account',
+    });
+
+    const identityPosition = identity.compareDocumentPosition(clearData);
+    const clearDataPosition = clearData.compareDocumentPosition(signOut);
+
+    expect(identityPosition & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(clearDataPosition & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await user.click(clearData);
+
+    expect(onClearData).toHaveBeenCalledOnce();
+    expect(onSignOut).not.toHaveBeenCalled();
+  });
+
   it('calls the consumer sign-out action once after selecting sign out', async () => {
     const onSignOut = vi.fn();
     const user = userEvent.setup();

@@ -3,6 +3,7 @@ import {LuChevronDown} from 'react-icons/lu';
 
 export type SelectorOption = {
   label: ReactNode;
+  selectable?: boolean;
   value: string;
 };
 
@@ -203,6 +204,10 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
             const select = () => selectOption(option.value);
             const optionContent =
               renderOption?.({isSelected, option, select}) ?? option.label;
+
+            if (option.selectable === false) {
+              return <li key={option.value}>{optionContent}</li>;
+            }
 
             return (
               <li key={option.value}>
