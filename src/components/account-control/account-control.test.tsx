@@ -60,6 +60,20 @@ describe('AccountControl', () => {
     expect(screen.queryByText('ada@example.com')).not.toBeInTheDocument();
   });
 
+  it('uses the email when the authentication name contains only whitespace', () => {
+    render(
+        <AccountControl
+          {...defaultProps}
+          email="ada@example.com"
+          name="   "
+        />,
+    );
+
+    expect(screen.getByRole('button', {
+      name: 'A Account menu for Ada Lovelace',
+    })).toBeInTheDocument();
+  });
+
   it('calls the consumer sign-out action once after selecting sign out', async () => {
     const onSignOut = vi.fn();
     const user = userEvent.setup();

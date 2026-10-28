@@ -23,7 +23,8 @@ export function AccountControl({
   signOutAriaLabel,
   signOutText,
 }: AccountControlProps) {
-  const identity = name || email || fallbackIdentity;
+  const normalizedName = name?.trim();
+  const identity = normalizedName || email || fallbackIdentity;
   const initials = getInitials(identity);
   const showEmail = Boolean(email && email !== identity);
   const options = [

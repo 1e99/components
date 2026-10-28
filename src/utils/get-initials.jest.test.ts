@@ -14,6 +14,10 @@ describe('getInitials', () => {
     expect(getInitials('ada')).toBe('A');
   });
 
+  test('uses locale-independent casing for Turkish i', () => {
+    expect(getInitials('ipek doğan')).toBe('ID');
+  });
+
   test('uses the stable fallback for an empty identity', () => {
     expect(getInitials('   ')).toBe('1');
   });

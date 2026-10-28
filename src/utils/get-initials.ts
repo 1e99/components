@@ -6,7 +6,7 @@ export function getInitials(value: string) {
     selected
         .map((part) => Array.from(part)[0])
         .join('')
-        .toLocaleUpperCase()
+        .toUpperCase()
         .slice(0, 2) || '1'
   );
 }
