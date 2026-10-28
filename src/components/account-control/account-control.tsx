@@ -67,7 +67,7 @@ export function AccountControl({
       )}
       renderTrigger={() => (
         <span aria-hidden="true" className="flex items-center gap-3 md:gap-0">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-yellow">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand-yellow font-data">
             {initials}
           </span>
           <span className="text-label font-semibold md:hidden">{menuText}</span>
@@ -75,7 +75,7 @@ export function AccountControl({
       )}
       showTriggerIndicator={false}
       triggerAriaLabel={`${initials} ${menuAriaLabel}`}
-      triggerClassName="flex min-h-12 w-full cursor-pointer select-none items-center justify-start rounded-control border border-border-subtle bg-surface-raised px-3 font-data text-label font-semibold text-brand-navy-dark shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus md:size-10 md:min-h-0 md:w-10 md:justify-center md:rounded-full md:bg-white md:p-1"
+      triggerClassName="flex min-h-12 w-full cursor-pointer select-none items-center justify-start rounded-control border border-border-subtle bg-surface-raised px-3 text-label font-semibold text-brand-navy-dark shadow-card transition-colors duration-200 ease-brand hover:bg-brand-cloud focus-visible:outline-none focus-visible:shadow-focus md:size-10 md:min-h-0 md:w-10 md:justify-center md:rounded-full md:bg-white md:p-1"
       value="account"
     />
   );

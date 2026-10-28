@@ -77,9 +77,11 @@ describe('AccountControl', () => {
     );
     expect(trigger).toHaveTextContent('AL');
     expect(trigger).toHaveTextContent('Account');
+    expect(trigger).not.toHaveClass('font-data');
     expect(trigger.parentElement).toHaveClass('w-full', 'md:w-auto');
     expect(screen.getByText('AL')).toHaveClass(
         'size-8',
+        'font-data',
         'rounded-full',
         'bg-brand-yellow',
     );
