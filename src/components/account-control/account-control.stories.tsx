@@ -1,0 +1,71 @@
+import type {Meta, StoryObj} from '@storybook/react-vite';
+import {useState} from 'react';
+import {
+  AccountControl,
+  type AccountControlProps,
+} from './account-control';
+
+export type AccountControlStoryArgs = Omit<AccountControlProps, 'onSignOut'>;
+
+function AccountControlPreview(props: AccountControlStoryArgs) {
+  const [signOutRequested, setSignOutRequested] = useState(false);
+
+  return (
+    <div className="w-72">
+      <AccountControl {...props} onSignOut={() => setSignOutRequested(true)} />
+      {signOutRequested ? (
+        <p className="mt-3 text-label text-content-secondary" role="status">
+          Sign-out requested
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+const meta = {
+  title: 'Controls/AccountControl',
+  component: AccountControlPreview,
+  parameters: {
+    layout: 'centered',
+  },
+  args: {
+    email: 'ada@example.com',
+    fallbackIdentity: 'Workspace account',
+    menuAriaLabel: 'Account menu for Ada Lovelace',
+    menuText: 'Account',
+    name: 'Ada Lovelace',
+    signOutAriaLabel: 'Sign out of this account',
+    signOutText: 'Sign out',
+  },
+  argTypes: {
+    email: {control: 'text'},
+    fallbackIdentity: {control: 'text'},
+    menuAriaLabel: {control: 'text'},
+    menuText: {control: 'text'},
+    name: {control: 'text'},
+    signOutAriaLabel: {control: 'text'},
+    signOutText: {control: 'text'},
+  },
+} satisfies Meta<AccountControlStoryArgs>;
+
+export default meta;
+
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+
+export const EmailOnly: Story = {
+  args: {
+    email: 'owner@example.com',
+    menuAriaLabel: 'Account menu for owner@example.com',
+    name: null,
+  },
+};
+
+export const LongIdentity: Story = {
+  args: {
+    email: 'ada.lovelace.with.a.very.long.email@example.com',
+    menuAriaLabel: 'Account menu for Ada Lovelace the First of Her Name',
+    name: 'Ada Lovelace the First of Her Name',
+  },
+};

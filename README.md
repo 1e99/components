@@ -33,6 +33,7 @@ O pacote não cria tokens nem importa CSS global.
 ```tsx
 import {useState} from "react";
 import {
+  AccountControl,
   GoogleSignInButton,
   Navbar,
   Selector,
@@ -89,6 +90,25 @@ biblioteca de navegação. Os itens podem ser adicionados ou removidos, e
 `GoogleSignInButton` recebe uma `label` obrigatória e os atributos nativos de
 um botão, como `onClick`, `disabled` e `aria-*`. Autenticação, estado de
 carregamento e traduções pertencem ao aplicativo que o utiliza.
+
+`AccountControl` apresenta a identidade autenticada e a ação de saída. Passe
+nome/e-mail, um `fallbackIdentity`, textos traduzidos e `onSignOut`; a ação
+concreta de logout, Auth.js, rotas e locale continuam no aplicativo consumidor.
+Como ele compõe um `Selector` interativo, use-o a partir de um componente do
+cliente:
+
+```tsx
+<AccountControl
+  email="ada@example.com"
+  fallbackIdentity="Conta"
+  menuAriaLabel="Menu da conta de Ada Lovelace"
+  menuText="Conta"
+  name="Ada Lovelace"
+  onSignOut={() => logout()}
+  signOutAriaLabel="Sair desta conta"
+  signOutText="Sair"
+/>
+```
 
 `Selector` é controlado: `value` determina a opção visível e
 `onValueChange` informa uma nova escolha. As opções exigem somente `value` e
