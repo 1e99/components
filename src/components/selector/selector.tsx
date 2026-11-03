@@ -1,5 +1,6 @@
 import {type ReactNode, useEffect, useId, useRef, useState} from 'react';
 import {LuChevronDown} from 'react-icons/lu';
+import {cn} from '../../utils/cn';
 
 export type SelectorOption = {
   label: ReactNode;
@@ -69,6 +70,7 @@ function SelectorTrigger<TOption extends SelectorOption>({
   renderTrigger,
   selectedOption,
   showTriggerIndicator,
+  surfaceClassName,
   triggerAriaLabel,
   triggerClassName,
   value,
@@ -80,6 +82,7 @@ function SelectorTrigger<TOption extends SelectorOption>({
   renderTrigger?: (context: SelectorRenderTriggerContext<TOption>) => ReactNode;
   selectedOption: TOption | undefined;
   showTriggerIndicator: boolean;
+  surfaceClassName: string;
   triggerAriaLabel?: string;
   triggerClassName?: string;
   value: string;
@@ -92,7 +95,11 @@ function SelectorTrigger<TOption extends SelectorOption>({
       aria-controls={optionListId}
       aria-expanded={isOpen}
       aria-label={triggerAriaLabel}
-      className={triggerClassName ?? `${standardTriggerClassName} ${densityClassName}`}
+      className={triggerClassName ?? cn(
+          standardTriggerClassName,
+          surfaceClassName,
+          densityClassName,
+      )}
       onClick={onClick}
       type="button"
     >
@@ -189,6 +196,7 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
         renderTrigger={renderTrigger}
         selectedOption={selectedOption}
         showTriggerIndicator={showTriggerIndicator}
+        surfaceClassName={surfaceClassName}
         triggerAriaLabel={triggerAriaLabel}
         triggerClassName={triggerClassName}
         value={value}
@@ -196,7 +204,10 @@ export function Selector<TOption extends SelectorOption = SelectorOption>({
       {isOpen ? (
         <ul
           aria-label={label}
-          className={`mt-2 w-full overflow-hidden rounded-control border border-border-subtle ${surfaceClassName} p-1 shadow-float md:absolute md:top-full md:right-0 md:z-60 md:min-w-44`}
+          className={cn(
+              'mt-2 w-full overflow-hidden rounded-control border border-border-subtle p-1 shadow-float md:absolute md:top-full md:right-0 md:z-60 md:min-w-44',
+              surfaceClassName,
+          )}
           id={optionListId}
         >
           {options.map((option) => {

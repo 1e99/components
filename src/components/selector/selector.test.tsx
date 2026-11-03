@@ -342,6 +342,68 @@ describe('Selector', () => {
     expect(englishTrigger).toHaveAccessibleName('English');
   });
 
+  it('uses a white surface for both the trigger and option list when requested', () => {
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => undefined}
+          options={languageOptions}
+          triggerAriaLabel="Selecionar idioma"
+          value="pt"
+          whiteSurface
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Selecionar idioma');
+
+    expect(trigger).toHaveClass('bg-white');
+
+    fireEvent.click(trigger);
+
+    expect(screen.getByRole('list', {name: 'Idioma'})).toHaveClass('bg-white');
+  });
+
+  it('uses the raised surface for both the trigger and option list by default', () => {
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => undefined}
+          options={languageOptions}
+          triggerAriaLabel="Selecionar idioma"
+          value="pt"
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Selecionar idioma');
+
+    expect(trigger).toHaveClass('bg-surface-raised');
+
+    fireEvent.click(trigger);
+
+    expect(screen.getByRole('list', {name: 'Idioma'})).toHaveClass(
+        'bg-surface-raised',
+    );
+  });
+
+  it('keeps a custom trigger class independent of the white surface', () => {
+    render(
+        <Selector
+          label="Idioma"
+          onValueChange={() => undefined}
+          options={languageOptions}
+          triggerAriaLabel="Selecionar idioma"
+          triggerClassName="custom-trigger"
+          value="pt"
+          whiteSurface
+        />,
+    );
+
+    const trigger = screen.getByLabelText('Selecionar idioma');
+
+    expect(trigger).toHaveClass('custom-trigger');
+    expect(trigger).not.toHaveClass('bg-white');
+  });
+
   it.each([
     ['standard', 'w-full', 'min-h-12'],
     ['compact', 'w-auto', 'h-12'],
