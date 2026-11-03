@@ -34,6 +34,8 @@ O pacote não cria tokens nem importa CSS global.
 import {useState} from "react";
 import {
   AccountControl,
+  CloseButton,
+  Dialog,
   GoogleSignInButton,
   Navbar,
   Selector,
@@ -131,6 +133,42 @@ quando não há identidade disponível.
 `label`, mas podem ser estendidas com outros campos e apresentadas por
 `renderOption` e `renderTrigger`. O componente não navega nem muda estado por
 conta própria.
+
+`Dialog` também é controlado. Passe `open` e atualize esse estado em `onClose`;
+o componente usa o elemento nativo `<dialog>` para apresentar um modal com
+título, backdrop e botão de fechar consistentes. O título obrigatório fornece o
+nome acessível por padrão. Use `ariaLabel` somente quando ele precisar ser mais
+específico do que o título visível:
+
+```tsx
+function PlansDialog() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setOpen(true)} type="button">
+        Ver planos
+      </button>
+      <Dialog
+        closeLabel="Fechar planos"
+        onClose={() => setOpen(false)}
+        open={open}
+        title="Planos disponíveis"
+      >
+        <p>Compare os recursos antes de escolher.</p>
+      </Dialog>
+    </>
+  );
+}
+```
+
+`CloseButton` é o mesmo controle de fechar estilizado e pode ser reutilizado em
+outros elementos dispensáveis. Ele exige `label` para que cada consumidor use o
+texto traduzido apropriado:
+
+```tsx
+<CloseButton label="Fechar painel" onClick={() => setPanelOpen(false)} />
+```
 
 ## Desenvolvimento
 
