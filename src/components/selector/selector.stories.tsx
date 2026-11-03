@@ -24,7 +24,9 @@ const workspaceOptions = [
   },
 ] as const;
 
-function LanguageSelectorPreview() {
+function LanguageSelectorPreview(
+    {whiteSurface = false}: {whiteSurface?: boolean},
+) {
   const [value, setValue] = useState('pt');
   const selectedOption = languageOptions.find(
       (option) => option.value === value,
@@ -49,6 +51,7 @@ function LanguageSelectorPreview() {
         )}
         triggerAriaLabel={`Idioma: ${selectedOption?.label ?? value}`}
         value={value}
+        whiteSurface={whiteSurface}
       />
     </div>
   );
@@ -116,6 +119,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Language: Story = {
   render: () => <LanguageSelectorPreview />,
+};
+
+export const WhiteSurface: Story = {
+  render: () => <LanguageSelectorPreview whiteSurface />,
 };
 
 export const CustomContent: Story = {

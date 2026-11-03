@@ -31,6 +31,13 @@ export const Secondary: Story = {
   },
 };
 
+export const SecondaryWhiteSurface: Story = {
+  args: {
+    variant: 'secondary',
+    whiteSurface: true,
+  },
+};
+
 export const Outline: Story = {
   args: {
     variant: 'outline',
