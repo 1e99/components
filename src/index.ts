@@ -2,6 +2,8 @@ export {GoogleSignInButton} from './components/google-sign-in-button/google-sign
 export type {GoogleSignInButtonProps} from './components/google-sign-in-button/google-sign-in-button';
 export {CloseButton} from './components/close-button/close-button';
 export type {CloseButtonProps} from './components/close-button/close-button';
+export {Dialog} from './components/dialog/dialog';
+export type {DialogProps} from './components/dialog/dialog';
 export {AccountControl} from './components/account-control/account-control';
 export type {AccountControlProps} from './components/account-control/account-control';
 export {getInitials} from './utils/get-initials';
