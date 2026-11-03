@@ -34,7 +34,7 @@ O pacote não cria tokens nem importa CSS global.
 import {useState} from "react";
 import {
   AccountControl,
-  CloseButton,
+  Button,
   Dialog,
   GoogleSignInButton,
   Navbar,
@@ -162,12 +162,16 @@ function PlansDialog() {
 }
 ```
 
-`CloseButton` é o mesmo controle de fechar estilizado e pode ser reutilizado em
-outros elementos dispensáveis. Ele exige `label` para que cada consumidor use o
-texto traduzido apropriado:
+`Button` é o controle estilizado reutilizável para ações compactas. Ele recebe
+qualquer conteúdo React e os atributos nativos do elemento `button`; em ações
+somente com ícone, forneça um nome acessível traduzido:
 
 ```tsx
-<CloseButton label="Fechar painel" onClick={() => setPanelOpen(false)} />
+import {LuX} from "react-icons/lu";
+
+<Button aria-label="Fechar painel" onClick={() => setPanelOpen(false)}>
+  <LuX aria-hidden="true" />
+</Button>
 ```
 
 ## Desenvolvimento

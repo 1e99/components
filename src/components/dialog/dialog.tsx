@@ -1,5 +1,6 @@
 import {type ReactNode, useEffect, useId, useRef} from 'react';
-import {CloseButton} from '../close-button/close-button';
+import {LuX} from 'react-icons/lu';
+import {Button} from '../button/button';
 
 export type DialogProps = {
   ariaLabel?: string;
@@ -58,7 +59,9 @@ export function Dialog({
         <h2 className="text-lg font-bold" id={titleId}>
           {title}
         </h2>
-        <CloseButton label={closeLabel} onClick={onClose} />
+        <Button aria-label={closeLabel} onClick={onClose}>
+          <LuX aria-hidden="true" />
+        </Button>
       </div>
       <div className="p-5 sm:p-6">{children}</div>
     </dialog>

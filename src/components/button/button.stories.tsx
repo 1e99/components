@@ -1,19 +1,18 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
-import {CloseButton} from './close-button';
+import {LuX} from 'react-icons/lu';
+import {Button} from './button';
 
 const meta = {
-  title: 'Controls/CloseButton',
-  component: CloseButton,
+  title: 'Controls/Button',
+  component: Button,
   parameters: {
     layout: 'centered',
   },
   args: {
-    label: 'Fechar',
+    'aria-label': 'Fechar',
+    'children': <LuX aria-hidden="true" />,
   },
-  argTypes: {
-    label: {control: 'text'},
-  },
-} satisfies Meta<typeof CloseButton>;
+} satisfies Meta<typeof Button>;
 
 export default meta;
 
