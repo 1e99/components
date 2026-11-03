@@ -9,7 +9,7 @@ describe('Button', () => {
     const onClick = vi.fn();
 
     render(
-        <Button aria-label="Fechar diálogo" onClick={onClick}>
+        <Button aria-label="Fechar diálogo" onClick={onClick} size="icon">
           <LuX aria-hidden="true" />
         </Button>,
     );
@@ -47,6 +47,23 @@ describe('Button', () => {
 
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute('type', 'submit');
+  });
+
+  it('uses the primary action treatment for text content', () => {
+    render(<Button>Abrir planos</Button>);
+
+    const button = screen.getByRole('button', {name: 'Abrir planos'});
+
+    expect(button).toHaveClass(
+        'inline-flex',
+        'min-h-11',
+        'cursor-pointer',
+        'bg-action-primary',
+        'px-4',
+        'py-3',
+        'text-content-inverse',
+    );
+    expect(button).not.toHaveClass('size-11');
   });
 
   it('requires content from the consumer', () => {

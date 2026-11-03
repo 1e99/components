@@ -1,7 +1,7 @@
 export {GoogleSignInButton} from './components/google-sign-in-button/google-sign-in-button';
 export type {GoogleSignInButtonProps} from './components/google-sign-in-button/google-sign-in-button';
 export {Button} from './components/button/button';
-export type {ButtonProps} from './components/button/button';
+export type {ButtonProps, ButtonSize} from './components/button/button';
 export {Dialog} from './components/dialog/dialog';
 export type {DialogProps} from './components/dialog/dialog';
 export {AccountControl} from './components/account-control/account-control';

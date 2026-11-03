@@ -9,8 +9,7 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    'aria-label': 'Fechar',
-    'children': <LuX aria-hidden="true" />,
+    children: 'Abrir planos',
   },
 } satisfies Meta<typeof Button>;
 
@@ -23,5 +22,13 @@ export const Default: Story = {};
 export const Disabled: Story = {
   args: {
     disabled: true,
+  },
+};
+
+export const Icon: Story = {
+  args: {
+    'aria-label': 'Fechar',
+    'children': <LuX aria-hidden="true" />,
+    'size': 'icon',
   },
 };

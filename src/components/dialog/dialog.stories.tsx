@@ -1,5 +1,6 @@
 import type {Meta, StoryObj} from '@storybook/react-vite';
 import {useState} from 'react';
+import {Button} from '../button/button';
 import {Dialog} from './dialog';
 
 function DialogPreview({initiallyOpen, longContent = false}: {
@@ -12,13 +13,9 @@ function DialogPreview({initiallyOpen, longContent = false}: {
 
   return (
     <>
-      <button
-        className="rounded-control bg-action-primary px-4 py-3 text-label font-semibold text-content-inverse"
-        onClick={() => setOpen(true)}
-        type="button"
-      >
+      <Button onClick={() => setOpen(true)}>
         Abrir planos
-      </button>
+      </Button>
       <Dialog
         closeLabel="Fechar planos"
         onClose={() => setOpen(false)}

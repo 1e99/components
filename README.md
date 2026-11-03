@@ -169,7 +169,7 @@ somente com ícone, forneça um nome acessível traduzido:
 ```tsx
 import {LuX} from "react-icons/lu";
 
-<Button aria-label="Fechar painel" onClick={() => setPanelOpen(false)}>
+<Button aria-label="Fechar painel" onClick={() => setPanelOpen(false)} size="icon">
   <LuX aria-hidden="true" />
 </Button>
 ```

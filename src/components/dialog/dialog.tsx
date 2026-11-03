@@ -59,7 +59,7 @@ export function Dialog({
         <h2 className="text-lg font-bold" id={titleId}>
           {title}
         </h2>
-        <Button aria-label={closeLabel} onClick={onClose}>
+        <Button aria-label={closeLabel} onClick={onClose} size="icon">
           <LuX aria-hidden="true" />
         </Button>
       </div>
