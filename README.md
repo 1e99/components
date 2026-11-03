@@ -163,8 +163,10 @@ function PlansDialog() {
 ```
 
 `Button` é o controle estilizado reutilizável para ações compactas. Ele recebe
-qualquer conteúdo React e os atributos nativos do elemento `button`; em ações
-somente com ícone, forneça um nome acessível traduzido:
+qualquer conteúdo React e os atributos nativos do elemento `button`.
+`primary` é a variante padrão; use `secondary` ou `outline` para ações menos
+enfáticas. Em ações somente com ícone, use `size="icon"` e forneça um nome
+acessível traduzido:
 
 ```tsx
 import {LuX} from "react-icons/lu";

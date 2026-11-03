@@ -66,6 +66,30 @@ describe('Button', () => {
     expect(button).not.toHaveClass('size-11');
   });
 
+  it('offers secondary and outline text treatments without style overrides', () => {
+    render(
+        <>
+          <Button variant="secondary">Ação secundária</Button>
+          <Button variant="outline">Ação em outline</Button>
+        </>,
+    );
+
+    expect(screen.getByRole('button', {name: 'Ação secundária'})).toHaveClass(
+        'border',
+        'border-border-subtle',
+        'bg-surface-raised',
+        'text-content-primary',
+        'hover:bg-brand-cloud',
+    );
+    expect(screen.getByRole('button', {name: 'Ação em outline'})).toHaveClass(
+        'border',
+        'border-border-strong',
+        'bg-transparent',
+        'text-content-primary',
+        'hover:bg-surface-subtle',
+    );
+  });
+
   it('requires content from the consumer', () => {
     // @ts-expect-error the package must not choose default button content.
     const buttonWithoutContent = <Button />;
