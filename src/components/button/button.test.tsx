@@ -90,6 +90,39 @@ describe('Button', () => {
     );
   });
 
+  it('uses a white surface for a secondary button when requested', () => {
+    render(
+        <Button variant="secondary" whiteSurface>
+          Ação secundária em branco
+        </Button>,
+    );
+
+    const button = screen.getByRole('button', {name: 'Ação secundária em branco'});
+
+    expect(button).toHaveClass('bg-white');
+    expect(button).not.toHaveClass('bg-surface-raised');
+  });
+
+  it('keeps the raised surface for a secondary button by default', () => {
+    render(<Button variant="secondary">Ação secundária padrão</Button>);
+
+    const button = screen.getByRole('button', {name: 'Ação secundária padrão'});
+
+    expect(button).toHaveClass('bg-surface-raised');
+    expect(button).not.toHaveClass('bg-white');
+  });
+
+  it('does not change non-secondary variants when whiteSurface is requested', () => {
+    render(
+        <Button whiteSurface>Ação primária</Button>,
+    );
+
+    const button = screen.getByRole('button', {name: 'Ação primária'});
+
+    expect(button).toHaveClass('bg-action-primary');
+    expect(button).not.toHaveClass('bg-white');
+  });
+
   it('requires content from the consumer', () => {
     // @ts-expect-error the package must not choose default button content.
     const buttonWithoutContent = <Button />;

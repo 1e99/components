@@ -1,4 +1,5 @@
 import type {ButtonHTMLAttributes, ReactNode} from 'react';
+import {cn} from '../../utils/cn';
 
 export type ButtonSize = 'default' | 'icon';
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -10,6 +11,7 @@ export type ButtonProps = Omit<
   children: ReactNode;
   size?: ButtonSize;
   variant?: ButtonVariant;
+  whiteSurface?: boolean;
 };
 
 const buttonSizeClassNames: Record<ButtonSize, string> = {
@@ -33,12 +35,17 @@ export function Button({
   size = 'default',
   type = 'button',
   variant = size === 'icon' ? 'ghost' : 'primary',
+  whiteSurface = false,
   ...buttonProps
 }: ButtonProps) {
   return (
     <button
       {...buttonProps}
-      className={`${buttonSizeClassNames[size]} ${buttonVariantClassNames[variant]}`}
+      className={cn(
+          buttonSizeClassNames[size],
+          buttonVariantClassNames[variant],
+          variant === 'secondary' && whiteSurface && 'bg-white',
+      )}
       type={type}
     >
       {children}

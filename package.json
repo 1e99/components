@@ -82,5 +82,9 @@
   "packageManager": "pnpm@12.9.1",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.7.0"
   }
 }
