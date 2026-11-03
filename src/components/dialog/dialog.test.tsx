@@ -88,6 +88,22 @@ describe('Dialog', () => {
     expect(dialog).toHaveAttribute('open');
   });
 
+  it('keeps its title and close control fixed while content scrolls', () => {
+    render(
+        <Dialog closeLabel="Fechar planos" onClose={() => undefined} open title="Planos">
+          Conteúdo do diálogo
+        </Dialog>,
+    );
+
+    const dialog = screen.getByRole('dialog', {name: 'Planos'});
+    const heading = screen.getByRole('heading', {name: 'Planos'});
+    const header = heading.parentElement;
+
+    expect(dialog).toHaveClass('overflow-y-auto', 'p-0');
+    expect(header).toHaveClass('sticky', 'top-0', 'z-10', 'bg-surface-page');
+    expect(header).toContainElement(screen.getByRole('button', {name: 'Fechar planos'}));
+  });
+
   it('uses optional ariaLabel instead of the visible title when provided', () => {
     render(
         <Dialog
